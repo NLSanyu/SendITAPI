@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/send_it_style.css" type="text/css">
+  <script src="../static/send_it_script.js"></script>
+  <title>SendIT - Profile</title>
+ </head>
+<body>
+
+	<div class=header>
+		<p id="sendit">SendIT</p>
+		<nav>
+			<a href="{{ url_for('index') }}">Home</a>
+			<a href="{{ url_for('sign_in') }}">Sign Out</a>
+		</nav>	
+	</div>
+	
+	<div class="flex-container-profile">
+		<div class="profile-image" style="flex-grow: 2">
+			<h3>Name</h3>
+			<!-- <h3>Address</h3> -->
+			<h3>Frequent locations:</h3>
+			<ul>
+				<li><h4>Location A</h4></li>
+				<li><h4>Location B</h4></li>
+			</ul>
+			<br>
+			<h3>Orders</h3>
+			<h4>Delivered: 0</h4>
+			<h4>In transit: 0</h4>
+		</div>
+		<div class="profile-details" style="flex-grow: 8">
+			<h3>Parcel delivery orders</h4>
+			<h4><a href="{{ url_for('create_parcel') }}">Create parcel delivery order</a></h4>
+			<h4><a href="{{ url_for('parcels') }}">All parcel delivery orders</a></h4>	
+		</div>
+		
+	</div>
+  
+</body>
+
+</html>

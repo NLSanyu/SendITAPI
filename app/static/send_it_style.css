@@ -1,0 +1,300 @@
+:root {
+    --main-light-color: #eee;
+	--main-semi-color: #ccc;
+	--main-dark-color: #003366;
+    --light-blue-color: #add8e6;	
+}
+
+body {
+	margin: 10px;
+	font-family: Helvetica, Arial, sans-serif;;
+	background-image: url("/static/images/geometry2.png");
+	/*background-image: url({{ url_for('static', filename='/images/geometry2.jpg') }});*/
+}
+
+nav{
+ background: var(--main-dark-color);
+ height: 20px;
+ padding-bottom: 20px;
+ text-decoration: none;
+ }
+
+nav > a {
+ text-decoration: none;	
+ color: white;
+ display: block;
+ float: left;
+ margin-left: 40px;
+ padding: 10px;
+}
+
+ul li {
+	list-style-type: none;
+}
+
+a {
+	text-decoration: none;
+	 color: black;
+}
+
+a:hover {
+	color: var(--light-blue-color);
+}
+
+.nav-right {
+	float: right;
+}
+
+#sendit {
+	margin-left: auto;
+	margin-right:auto;
+	margin-bottom: 0px;
+	padding: 15px;
+	color: var(--main-dark-color);
+    font-size: 25px;
+	text-align: center;
+	background-color: var(--main-light-color);
+	font-weight: bold;
+}
+
+.flex-home-content {
+	display: flex;
+	fllex-direction: row;
+	justify-content: center;
+	align-items: stretch;
+	width: 100%
+}
+
+.header img{
+   height: 100%;
+   width: 100%;
+}
+
+.home-tagline {
+	background-color: var(--main-dark-color);
+	color: white;
+	padding: 80px 20px 50px 20px;
+	font-size: 16px;
+}
+
+.tagline {
+	margin: 15px;
+	padding: 0px 20px 60px 20px;
+}
+
+.create-account a {
+	text-decoration: underline;
+	 color: var(--main-dark-color);
+}
+
+.form {
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right:auto;
+	width: 50%;
+	background-color: var(--main-light-color);
+	border-radius: 20px;
+	padding-bottom: 20px;
+}
+
+.form td, input {
+   padding: 10px;
+}
+
+.form h1, p {
+  margin: 5px;
+  padding: 5px;
+  align: center;
+  padding-top: 15px;
+  padding-left: 20px;
+}
+
+i {
+	color: var(--main-dark-color);
+}
+
+.submit-button {
+    background-color: var(--main-dark-color);
+    border: none;
+    color: white;
+	margin-left: auto;
+	margin-right: auto;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.form-table {
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px;
+}
+
+table tr td {
+	text-align center;
+}
+
+#cancel-btn {
+	border: 1px solid var(--main-semi-color);
+}
+
+.colon {
+	width: 5px;
+}
+
+.flex-container-parcels {
+	display: flex;
+	fllex-direction: row;
+	justify-content: center;
+	align-items: stretch;
+	margin: 10px;
+	padding: 20px;
+	width: 90%
+}
+
+.parcel-options {
+	background-color: var(--main-semi-color);
+	border-radius: 15px;
+	padding-left: 20px;
+	padding-top: 15px;
+	margin: 10px;
+}
+
+.parcel-details {
+	background-color: var(--main-light-color);
+	border-radius: 15px;
+	padding: 10px 20px;
+	margin: 10px;
+}
+
+.parcel-table {
+	border: 1px solid var(--main-semi-color);
+	border-collapse: collapse;
+	margin: 30px 15px;
+	padding: 10px;
+}
+
+.parcel-table th {
+	background-color: var(--main-semi-color);
+	margin: 20px 15px;
+	padding: 10px;
+}
+
+.parcel-table td {
+	background-color: var(--main-light-color);
+	margin: 20px 15px;
+	padding: 10px;
+}
+
+.parcel-form {
+	margin-top: 20px;
+	width: 60%;
+	background-color: var(--main-light-color);
+	border-radius: 15px;
+	padding-bottom: 20px;
+}
+
+.parcel-form-table {
+	margin-left: 10px;
+	padding: 10px;
+}
+
+#submit-dest {
+	background-color: var(--main-dark-color);
+	margin-left:auto;
+	margin-right:auto;
+    border: none;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.flex-container-profile {
+	display: flex;
+	fllex-direction: row;
+	justify-content: center;
+	align-items: stretch;
+	margin: 10px;
+	padding: 20px;
+	width: 90%
+}
+
+.profile-image {
+	background-color: var(--main-semi-color);
+	border-radius: 15px;
+	padding-left: 20px;
+	margin: 10px;
+}
+
+.profile-image li {
+	background-color: var(--main-light-color);
+	border-radius: 5px;
+	padding-left: 20px;
+	margin: 10px;
+}
+
+.profile-details {
+	background-color: var(--main-light-color);
+	border-radius: 15px;
+	padding-left: 20px;
+	margin: 10px;
+}
+
+.profile-details h4 {
+	background-color: var(--main-semi-color);
+	border-radius: 15px;
+	padding: 20px;
+	margin: 10px;
+}
+
+.profile-details a:hover {
+	color: var(--main-dark-color);
+}
+
+.button-right {
+	background-color: var(--main-dark-color);
+    border: none;
+    color: white;
+	margin: 5px 20px;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.sidenav {
+	position: fixed;
+    height: 100%; 
+    width: 180px;
+    background-color: var(--main-dark-color);
+	z-index: 1; 
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav p {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    display: block;
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    display: block;
+}
+
+.admin-parcels {
+    margin-left: 180px; 
+    padding: 0px 10px;
+}

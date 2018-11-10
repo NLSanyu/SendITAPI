@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/send_it_style.css" type="text/css">
+  <script src="../static/send_it_script.js"></script>
+  <title>SendIT - Sign In</title>
+ </head>
+<body>
+
+	<div class=header>
+		<p id="sendit">SendIT</p>
+		<nav>
+			<a href="{{ url_for('index') }}">Home</a>
+			<a class="nav-right" href="{{ url_for('admin_sign_in') }}">Administrator</a>
+		</nav>	
+	</div>
+	
+	<div class="form">
+		<h1>Sign In</h1>
+		<form name="sign_in_form" action="{{ url_for('profile') }}" target="_self" onsubmit="signIn()"> 
+			<table class="form-table">
+				<tr> 
+					<td>Email</td> 
+					<td class="colon">:</td> 
+					<td> <input name="email" type="text" required> </td> 
+				</tr>  
+				<tr> 
+					<td>Password</td> 
+					<td class="colon">:</td> 
+					<td> <input name="password" type="password" required></td> 
+				</tr> 
+			</table>
+			
+			<input name="submit_button" type="submit" value="Sign In" class="submit-button">
+					
+		</form>
+	
+		<br>
+		<p class="create-account">Don't have an account? Sign up <a href="{{ url_for('sign_up') }}">here</a></p>
+		<!-- <p>Sign in as administrator <a href="sign_in.html">here</a></p> -->
+		<br>
+	 
+	</div>
+  
+</body>
+
+</html>

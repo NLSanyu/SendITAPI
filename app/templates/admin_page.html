@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/send_it_style.css" type="text/css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+  <script src="../static/send_it_script.js"></script>
+  <title>SendIT - Admin</title>
+</head>
+<body>
+	<p id="sendit">SendIT - Admin</p>
+	<div class="sidenav">
+		<p onclick=" adminViewParcels()">Parcels</p>
+		<a href="{{ url_for('admin_sign_in') }}" onclick="signOut()">Sign Out</a>
+	</div>	  
+	
+	<div class="admin-parcels" style="flex-grow: 8">
+			<div>
+				<h3>Parcels</h3>
+				<table class="parcel-table">
+					<tr>
+						<th>Parcel id</th>
+						<th>Owner</th>
+						<th>Description</th>
+						<th>Date created</th>
+						<th>Pickup location</th>
+						<th>Present location<i onclick="changePresentLocation();" class="fas fa-edit" id="icon-edit"></th>
+						<th>Destination</th>
+						<th>Price</th>
+						<th>Status<i onclick="changeStatus();" class="fas fa-edit" id="icon-edit"></th>
+					</tr>
+					<tr>
+						<td>parcel123</td>
+						<td>User123</td>
+						<td>Description</td>
+						<td>dd/mm/yy</td>
+						<td>My location</td>
+						<td id="pres-location">Location</td>
+						<td>Destination</td>
+						<td>shs xxx</td>
+						<td id="status">Status</td>	
+					</tr>
+				
+				</table>
+				
+				<table class="parcel-table">
+					<tr>
+						<th>Parcel id</th>
+						<th>Owner</th>
+						<th>Description</th>
+						<th>Date created</th>
+						<th>Pickup location</th>
+						<th>Present location<i onclick="changePresentLocation();" class="fas fa-edit" id="icon-edit"></th>
+						<th>Destination</th>
+						<th>Price</th>
+						<th>Status<i onclick="changeStatus();" class="fas fa-edit" id="icon-edit"></th>
+					</tr>
+					<tr>
+						<td>parcel123</td>
+						<td>User123</td>
+						<td>Description</td>
+						<td>dd/mm/yy</td>
+						<td>My location</td>
+						<td id="pres-location">Location</td>
+						<td>Destination</td>
+						<td>shs xxx</td>
+						<td id="status">Status</td>	
+					</tr>
+				
+				</table>
+				
+				<table class="parcel-table">
+					<tr>
+						<th>Parcel id</th>
+						<th>Owner</th>
+						<th>Description</th>
+						<th>Date created</th>
+						<th>Pickup location</th>
+						<th>Present location<i onclick="changePresentLocation();" class="fas fa-edit" id="icon-edit"></th>
+						<th>Destination</th>
+						<th>Price</th>
+						<th>Status<i onclick="changeStatus();" class="fas fa-edit" id="icon-edit"></th>
+					</tr>
+					<tr>
+						<td>parcel123</td>
+						<td>User123</td>
+						<td>Description</td>
+						<td>dd/mm/yy</td>
+						<td>My location</td>
+						<td id="pres-location">Location</td>
+						<td>Destination</td>
+						<td>shs xxx</td>
+						<td id="status">Status</td>	
+					</tr>
+				
+				</table>
+				
+				<table class="parcel-table">
+					<tr>
+						<th>Parcel id</th>
+						<th>Owner</th>
+						<th>Description</th>
+						<th>Date created</th>
+						<th>Pickup location</th>
+						<th>Present location<i onclick="changePresentLocation();" class="fas fa-edit" id="icon-edit"></th>
+						<th>Destination</th>
+						<th>Price</th>
+						<th>Status<i onclick="changeStatus();" class="fas fa-edit" id="icon-edit"></th>
+					</tr>
+					<tr>
+						<td>parcel123</td>
+						<td>User123</td>
+						<td>Description</td>
+						<td>dd/mm/yy</td>
+						<td>My location</td>
+						<td id="pres-location">Location</td>
+						<td>Destination</td>
+						<td>shs xxx</td>
+						<td id="status">Status</td>	
+					</tr>
+				
+				</table>
+				
+			</div>
+	
+</body>
+
+</html>

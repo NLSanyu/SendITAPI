@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/send_it_style.css" type="text/css">
+  <script src="../static/send_it_script.js"></script>
+  <title>SendIT - Administrator Sign In</title>
+ </head>
+<body>
+
+	<p id="sendit">SendIT</p>
+	<div class="form">
+		<h1>Administrator Sign In</h1>
+		<form name="admin_sign_up" action="{{ url_for('admin_page') }}" target="_self" onsubmit="signIn()"> 
+			<table class="form_table">
+				<tr> 
+					<td>Name</td></td> 
+					<td class="colon">:</td> 
+					<td> <input name="email" type="text" required> </td> 
+				</tr>  
+				<tr> 
+					<td>Password</td> 
+					<td class="colon">:</td> 
+					<td> <input name="password" type="password" required> </td> 
+				</tr> 
+			</table>
+			
+			<input name="submit_button" type="submit" value="Sign In" class="button-right">
+					
+		</form>
+  
+</body>
+
+</html>
