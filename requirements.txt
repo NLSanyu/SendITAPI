@@ -28,7 +28,6 @@ pluggy==0.7.1
 py==1.6.0
 PyInstaller==3.3.1
 pylint==2.1.1
-pypiwin32==223
 pytest==3.8.1
 python-dateutil==2.7.3
 pytz==2018.5
