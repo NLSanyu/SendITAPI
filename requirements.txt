@@ -32,7 +32,6 @@ pypiwin32==223
 pytest==3.8.1
 python-dateutil==2.7.3
 pytz==2018.5
-pywin32==223
 six==1.11.0
 SQLAlchemy==1.2.12
 stevedore==1.29.0
