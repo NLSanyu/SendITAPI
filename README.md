@@ -19,11 +19,23 @@ Python 3.6.5
 ### Installing
 
 ```
-Clone the repository into your local repository
-Create a virtual environment and activate it
+Copy the link for cloning this repository form the "Clone or download button"
+Create a folder on your computer
+Create a virtual environment and activate it (instruction below are for virtualenvwrapper)
+  $ mkvirtualenv my_venv
+  $ workon my_venv
+Open the terminal or git bash
+Enter these commands:
+  $ cd YourFolder
+  $ git clone <the clone link you copied>
 Install the requirements in the requirements.txt file
-Set the variable FLASK_APP to "sendit.py" ('set FLASK_APP' on Windows and 'export FLASK_APP' on Mac)
-Enter the 'flask run' command
+  $ pip install -r requirements.txt
+Set the variable FLASK_APP to "sendit.py" 
+  $' set FLASK_APP' (on Windows)  
+  $ 'export FLASK_APP' (on Mac)
+Run the program:
+  $ flask run
+Open up your web browser
 Go to 127.0.0.1:5000 or localhost:5000 to view the website
 ```
 
@@ -31,9 +43,9 @@ Go to 127.0.0.1:5000 or localhost:5000 to view the website
 ## Running the tests
 
 ```
-Open up the terminal
-Navigate to the project folder
-Enter the 'pytest' command to run tests
+Open the terminal
+$ cd YourFolder
+$ pytest
 ```
 
 
