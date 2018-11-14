@@ -16,12 +16,12 @@ These instructions will get you a copy of the project up and running on your loc
 Python 3.6.5
 ```
 
-### Installing
+### Installation
 
 ```
-Copy the link for cloning this repository form the "Clone or download button"
+Copy the link for cloning this repository from the "Clone or download button"
 Create a folder on your computer
-Create a virtual environment and activate it (instruction below are for virtualenvwrapper)
+Create a virtual environment and activate it (instructions below are for virtualenvwrapper)
   $ mkvirtualenv my_venv
   $ workon my_venv
 Open the terminal or git bash
@@ -36,7 +36,7 @@ Set the variable FLASK_APP to "sendit.py"
 Run the program:
   $ flask run
 Open up your web browser
-Go to 127.0.0.1:5000 or localhost:5000 to view the website
+Go to 127.0.0.1:5000 or localhost:5000 
 ```
 
 
