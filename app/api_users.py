@@ -40,16 +40,23 @@ users = [
 #api
 @app.route('/api/v1', methods=['GET'])
 def api_home():
+	"""
+		Function for API home
+	"""
 	return "<p>SendIT API</p>"
 
-#fetch all users
 @app.route('/api/v1/users', methods=['GET'])
 def get_all_users():
+	"""
+		Function for API endpoint to fetch all users
+	"""
 	return jsonify(users), 200
 
-#fetch all parcel delivery orders by a specific user
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
 def get_user_parcel(user_id):
+	"""
+		Function for API endpoint to fetch all parcel delivery orders by a specific user
+	"""
 	parcel = [parcel for parcel in api_parcels.parcels if parcel['owner'] == user_id]
 	if len(parcel) == 0:
 		abort(404)

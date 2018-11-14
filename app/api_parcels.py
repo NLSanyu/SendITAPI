@@ -50,22 +50,28 @@ parcels = [
 	}
 ]
 
-#fetch all parcel delivery orders
 @app.route('/api/v1/parcels', methods=['GET'])
 def get_all_parcels():
+	"""
+		Function for API endpoint to fetch all parcel delivery orders
+	"""
 	return jsonify({'parcels': parcels}), 200
 
-#fetch a specific parcel delivery order
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
 def get_parcel(parcel_id):
+	"""
+		Function for API endpoint to fetch a specific parcel delivery order
+	"""
 	parcel = [parcel for parcel in parcels if parcel['id'] == parcel_id]
 	if len(parcel) == 0:
 		abort(404)
 	return jsonify({'parcel': parcel[0]}), 200
 
-#cancel a specific parcel delivery order
 @app.route('/api/v1/parcels/<int:parcel_id>/cancel', methods=['PUT'])
 def cancel_order(parcel_id):
+	"""
+		Function for API endpoint to cancel a parcel delivery order
+	"""
 	parcel = [parcel for parcel in parcels if parcel['id'] == parcel_id]
 	if len(parcel) == 0:
 		abort(404)
@@ -78,6 +84,9 @@ def cancel_order(parcel_id):
 #create a parcel delivery order
 @app.route('/api/v1/parcels', methods=['POST'])
 def create_order():
+	"""
+		Function for API endpoint to create a parcel delivery order
+	"""
 	
 	date = datetime.datetime.now()
 	date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
