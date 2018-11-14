@@ -16,7 +16,7 @@ These instructions will get you a copy of the project up and running on your loc
 Python 3.6.5
 ```
 
-### Installing
+### Installation
 
 ```
 Copy the link for cloning this repository from the "Clone or download button"
