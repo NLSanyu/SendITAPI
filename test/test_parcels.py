@@ -33,20 +33,12 @@ class APITest(BaseTestCase):
 			'status': 'New'
 		}
 
-	def test_fetch_users(self):
-		response = self.client.get('/api/v1/users', content_type='application/json')
-		self.assertEqual(response.status_code, 200)
-
 	def test_fetch_parcels(self):
 		response = self.client.get('/api/v1/parcels', content_type='application/json')
 		self.assertEqual(response.status_code, 200)
 
 	def test_fetch_a_parcel(self):
 		response = self.client.get('/api/v1/parcels/3', content_type='application/json')
-		self.assertEqual(response.status_code, 200)
-
-	def test_fetch_a_user_parcel(self):
-		response = self.client.get('/api/v1/users/2/parcels', content_type='application/json')
 		self.assertEqual(response.status_code, 200)
 
 	def test_create_parcel(self):
