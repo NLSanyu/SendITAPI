@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="../static/send_it_style.css" type="text/css">
-  <script src="../static/send_it_script.js"></script>
+  <link rel="stylesheet" href="../../static/style.css" type="text/css">
+  <script src="../../static/script.js"></script>
   <title>SendIT - Sign In</title>
  </head>
 <body>
@@ -11,14 +11,15 @@
 	<div class=header>
 		<p id="sendit">SendIT</p>
 		<nav>
-			<a href="{{ url_for('index') }}">Home</a>
-			<a class="nav-right" href="{{ url_for('admin_sign_in') }}">Administrator</a>
+			<a href="index.html">Home</a>
+			<a href="sign_in.html">Sign In</a>
+			<a class="nav-right" href="../admin/admin_sign_in.html">Administrator</a>
 		</nav>	
 	</div>
 	
 	<div class="form">
 		<h1>Sign In</h1>
-		<form name="sign_in_form" action="{{ url_for('profile') }}" target="_self" onsubmit="signIn()"> 
+		<form name="sign_in_form" action="profile.html" target="_self" onsubmit="signIn()"> 
 			<table class="form-table">
 				<tr> 
 					<td>Email</td> 
@@ -37,7 +38,7 @@
 		</form>
 	
 		<br>
-		<p class="create-account">Don't have an account? Sign up <a href="{{ url_for('sign_up') }}">here</a></p>
+		<p class="create-account">Don't have an account? Sign up <a href="sign_up.html">here</a></p>
 		<!-- <p>Sign in as administrator <a href="sign_in.html">here</a></p> -->
 		<br>
 	 

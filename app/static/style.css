@@ -8,8 +8,7 @@
 body {
 	margin: 10px;
 	font-family: Helvetica, Arial, sans-serif;;
-	background-image: url("/static/images/geometry2.png");
-	/*background-image: url({{ url_for('static', filename='/images/geometry2.jpg') }});*/
+	background-image: url("images/geometry2.png");
 }
 
 nav{
@@ -73,8 +72,8 @@ a:hover {
 .home-tagline {
 	background-color: var(--main-dark-color);
 	color: white;
-	padding: 80px 20px 50px 20px;
-	font-size: 16px;
+	padding: 100px 20px 50px 20px;
+	font-size: 15px;
 }
 
 .tagline {
@@ -144,56 +143,52 @@ table tr td {
 	width: 5px;
 }
 
-.flex-container-parcels {
-	display: flex;
-	fllex-direction: row;
-	justify-content: center;
-	align-items: stretch;
-	margin: 10px;
-	padding: 20px;
-	width: 90%
-}
-
-.parcel-options {
+.parcel-title {
 	background-color: var(--main-semi-color);
-	border-radius: 15px;
-	padding-left: 20px;
-	padding-top: 15px;
-	margin: 10px;
+	border-radius: 5px;
+	padding: 10px 20px;
+	text-align: center;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .parcel-details {
 	background-color: var(--main-light-color);
-	border-radius: 15px;
+	border-radius: 5px;
 	padding: 10px 20px;
 	margin: 10px;
 }
 
 .parcel-table {
-	border: 1px solid var(--main-semi-color);
+	border: 1px solid var(--main-dark-color);
 	border-collapse: collapse;
-	margin: 30px 15px;
+	margin-left: auto;
+	margin-right: auto;
 	padding: 10px;
 }
 
 .parcel-table th {
-	background-color: var(--main-semi-color);
+	border-left: 1px solid var(--main-semi-color);
+	border-right: 1px solid var(--main-semi-color);
+	color: white;
+	background-color: var(--main-dark-color);
+	align: center;
 	margin: 20px 15px;
 	padding: 10px;
 }
 
 .parcel-table td {
+	border-left: 1px solid var(--main-dark-color);
+	border-right: 1px solid var(--main-dark-color);
 	background-color: var(--main-light-color);
+	align: center;
 	margin: 20px 15px;
 	padding: 10px;
 }
 
 .parcel-form {
-	margin-top: 20px;
-	width: 60%;
-	background-color: var(--main-light-color);
-	border-radius: 15px;
-	padding-bottom: 20px;
+	text-align: center;
 }
 
 .parcel-form-table {
@@ -220,36 +215,46 @@ table tr td {
 	justify-content: center;
 	align-items: stretch;
 	margin: 10px;
-	padding: 20px;
+	padding: 20px 10px;
 	width: 90%
 }
 
 .profile-image {
 	background-color: var(--main-semi-color);
 	border-radius: 15px;
-	padding-left: 20px;
-	margin: 10px;
-}
-
-.profile-image li {
-	background-color: var(--main-light-color);
-	border-radius: 5px;
+	padding-top: 30px;
 	padding-left: 20px;
 	margin: 10px;
 }
 
 .profile-details {
 	background-color: var(--main-light-color);
-	border-radius: 15px;
+	border-radius: 10px;
 	padding-left: 20px;
 	margin: 10px;
 }
 
 .profile-details h4 {
+	display: inline-block;
+	background-color: var(--main-dark-color);
+	border-radius: 8px;
+	padding: 8px;
+	margin: 5px 5px 20px 5px;
+}
+
+h4 > a {
+	color: white;
+}
+
+h4 > a:hover {
+	color: var(--main-light-color);
+}
+
+.profile-details h5 {
+	display: inline-block;
 	background-color: var(--main-semi-color);
-	border-radius: 15px;
-	padding: 20px;
-	margin: 10px;
+	padding: 5px;
+	margin: 5px 5px 20px 5px;
 }
 
 .profile-details a:hover {
@@ -260,7 +265,10 @@ table tr td {
 	background-color: var(--main-dark-color);
     border: none;
     color: white;
-	margin: 5px 20px;
+	margin-left: auto;
+	margin-right:auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
     padding: 10px 15px;
     text-align: center;
     text-decoration: none;

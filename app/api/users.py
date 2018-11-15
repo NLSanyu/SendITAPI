@@ -1,12 +1,12 @@
 import datetime
-from app import api_parcels
+from app.api import parcels
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
 
 users = [
 	{
-		'id': 0,
+		'id': 1,
 		'username': 'EddieKM',
 		'email': 'eddiekm@gmail.com',
 		'password': '12345',
@@ -16,7 +16,7 @@ users = [
 		'frequent_locations': ['Plot 55 Luwum Street']
 	},
 	{
-		'id': 1,
+		'id': 2,
 		'username': 'Xtine4',
 		'email': 'xtine4@gmail.com',
 		'password': '23456',
@@ -26,7 +26,7 @@ users = [
 		'frequent_locations': ['Plot 49 Ntinda Rd']
 	},
 	{
-		'id': 2,
+		'id': 3,
 		'username': 'MRichyz',
 		'email': 'mrichyz@gmail.com',
 		'password': '34567',
@@ -59,7 +59,7 @@ def get_user_parcel(user_id):
 	"""
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
-	parcel = [parcel for parcel in api_parcels.parcels if parcel['owner'] == user_id]
+	parcel = [parcel for parcel in parcels.parcels if parcel['owner'] == user_id]
 	if len(parcel) == 0:
 		abort(404, 'Error: No parcels created by this user yet')
 	return jsonify({'parcels': parcel}), 200
