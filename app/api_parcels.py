@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, request, jsonify, render_template, abort
+from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
 
@@ -55,6 +55,8 @@ def get_all_parcels():
 	"""
 		Function for API endpoint to fetch all parcel delivery orders
 	"""
+	if len(parcels) == 0:
+		abort(404, 'Error: No parcels delivery orders made yet')
 	return jsonify({'parcels': parcels}), 200
 
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
@@ -64,7 +66,7 @@ def get_parcel(parcel_id):
 	"""
 	parcel = [parcel for parcel in parcels if parcel['id'] == parcel_id]
 	if len(parcel) == 0:
-		abort(404)
+		abort(404, 'Error: No parcel with this id')
 	return jsonify({'parcel': parcel[0]}), 200
 
 @app.route('/api/v1/parcels/<int:parcel_id>/cancel', methods=['PUT'])
@@ -74,9 +76,9 @@ def cancel_order(parcel_id):
 	"""
 	parcel = [parcel for parcel in parcels if parcel['id'] == parcel_id]
 	if len(parcel) == 0:
-		abort(404)
+		abort(404, 'Error: No parcel with this id')
 	if parcel[0]['status'] == 'Delivered':
-		abort(403)
+		abort(403, 'Error: Status cannot be chnaged. Parcel is already delivered')
 	else:
 		parcel[0]['status'] = 'Cancelled'
 		return jsonify({'parcel': parcel[0]}), 200

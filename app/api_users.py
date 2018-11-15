@@ -1,6 +1,6 @@
 import datetime
 from app import api_parcels
-from flask import Flask, request, jsonify, abort, render_template
+from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
 
@@ -50,6 +50,8 @@ def get_all_users():
 	"""
 		Function for API endpoint to fetch all users
 	"""
+	if len(users) == 0:
+		abort(404, 'Error: No users registered yet')
 	return jsonify(users), 200
 
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
@@ -59,7 +61,7 @@ def get_user_parcel(user_id):
 	"""
 	parcel = [parcel for parcel in api_parcels.parcels if parcel['owner'] == user_id]
 	if len(parcel) == 0:
-		abort(404)
+		abort(404, 'Error: No parcels created by this user yet')
 	return jsonify({'parcels': parcel}), 200
 
 

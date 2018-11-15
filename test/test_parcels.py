@@ -58,7 +58,7 @@ class APITest(BaseTestCase):
 		"""
 			Test for cancelling a parcel delivery order
 		"""
-		response = self.client.put('/api/v1/parcels/3/cancel')
+		response = self.client.put('/api/v1/parcels/3/cancel', content_type='application/json')
 		self.assertEqual(response.status_code, 200)
 		self.assertIn('Cancelled', str(response.data))
 
