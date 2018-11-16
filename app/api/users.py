@@ -1,4 +1,4 @@
-import datetime
+import datetime, re
 from app.api import parcels
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
@@ -59,6 +59,7 @@ def get_user_parcel(user_id):
 	"""
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
+
 	parcel = [parcel for parcel in parcels.parcels if parcel['owner'] == user_id]
 	if len(parcel) == 0:
 		abort(404, 'Error: No parcels created by this user yet')

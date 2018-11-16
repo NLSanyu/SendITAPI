@@ -22,15 +22,14 @@ class APITest(BaseTestCase):
 		self.app = super().create_app()
 		self.client = self.app.test_client()
 		self.new_parcel = {
-			'id': 4,
 			'owner': 2,
 			'description': 'Green box',
-			'date_created': '4-11-2018',
 			'pickup_location': 'Plot 11 Colville Street',
-			'present_location': 'Shop no.25 Oasis Mall',
-			'destination': 'Shop no.25 Oasis Mall',
-			'price': 'shs 3,000',
-			'status': 'New'
+			'destination': 'Shop no.25 Oasis Mall'
+		}
+		self.wrong_parcel = {
+			'pickup_location': 'Plot 11 Colville Street',
+			'destination': 'Shop no.25 Oasis Mall'
 		}
 
 	def test_fetch_parcels(self):

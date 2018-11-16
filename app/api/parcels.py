@@ -92,19 +92,33 @@ def create_order():
 	date = datetime.datetime.now()
 	date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
 
-	parcel = {
+	#validation: making sure the required fields are filled in
+	if request.get_json('owner') == "":
+		return jsonify({'Message': 'Please add the parcel owner'}), 400
+
+	if request.get_json('description') == "":
+		return jsonify({'Message': 'Please add a description'}), 400
+	
+	if request.get_json('pickup_location') == "":
+		return jsonify({'Message': 'Please add a pickup_location'}), 400
+
+	if request.get_json('destination') == "":
+		return jsonify({'Message': 'Please add a destination'}), 400
+	
+
+	new_parcel = {
 		'id' : parcels[-1]['id'] + 1,
 		'owner': request.json['owner'],
-		'description': parcels[-1]['id'] + 1,
+		'description': request.json['description'],
 		'date_created': date_string,
 		'pickup_location': request.json['pickup_location'],
 		'present_location': request.json['pickup_location'],
 		'destination': request.json['destination'],
 		'price': ' ',
-		'status': 'Not picked up'
+		'status': 'New'
 	}
 
-	parcels.append(parcel)
+	parcels.append(new_parcel)
 	return jsonify({'parcels': parcels}), 201
 
 if __name__ == '__main__':
