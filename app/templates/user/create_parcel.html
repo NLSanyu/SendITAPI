@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../../static/style.css" type="text/css">
+  <script src="../../static/script.js"></script>
+  <title>SendIT - Parcels</title>
+ </head>
+<body>	
+	<p id="sendit">SendIT</p>		
+	<h3 class="parcel-form">Create a parcel delivery order</h3>
+	<div class="form">
+		<form name="create_parcel_form" action="parcels.html" class="form" target="_self" onsubmit="return validateParcelForm()"> 
+			<table class="parcel-form-table">
+				<tr> 
+					<td>Description</td> 
+					<td class="colon">:</td> 
+					<td> <textarea name="parcel_desc" rows="3"> </textarea> </td> 
+				</tr>  
+				<tr> 
+					<td>Pickup location</td> 
+					<td class="colon">:</td> 
+					<td> <textarea name="parcel_pickup" rows="3"> </textarea> </td> 
+				</tr>  
+				<tr> 
+					<td>Destination</td> 
+					<td class="colon">:</td> 
+					<td> <textarea name="parcel_destination" rows="3"> </textarea> </td> 
+				</tr>
+			</table>
+			<input name="submit_button" type="submit" value="Create" class="button-right">
+		</form>
+	</div>	
+</body>
+
+</html>
