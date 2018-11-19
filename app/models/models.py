@@ -17,10 +17,10 @@ class Database():
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            no_of_orders INTEGER,
-            no_delivered INTEGER,
-            no_in_transit INTEGER
+            password_hash VARCHAR(255) NOT NULL,
+            orders INTEGER,
+            delivered INTEGER,
+            in_transit INTEGER
         )
         """,
         """

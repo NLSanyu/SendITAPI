@@ -41,8 +41,10 @@ def get_user_parcel(user_id):
 	"""
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
+	if type(user_id) != int:
+		return jsonify({'message':'user musst be identified by an integer', 'status':'failure'}), 400
 
-	query = """SELECT * FROM parcels WHERE owner = %s;"""
+	query = """SELECT * FROM parcels WHERE owner = %(int)s;"""
 	connect_to_db()
 	parcels.cur.execute(query, (user_id,))
 	parcels.conn.commit()
@@ -52,7 +54,7 @@ def get_user_parcel(user_id):
 		for row in result:
 			parcel_dict['id'] = row[0]
 		parcels.conn.close()
-		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': parcel_dict}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
 	
@@ -62,6 +64,7 @@ def login_user():
 	"""
 		Function for API endpoint to log a user in
 	"""
+	req = request.json
 	username = request.json['username'] 
 	password = request.json['passwor'] 
 	email=""
