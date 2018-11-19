@@ -34,7 +34,6 @@ def get_all_users():
 	else:
 		return jsonify({'message':'no users', 'status':'failure'}), 400
 	
-	
 			
 	
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
@@ -43,23 +42,20 @@ def get_user_parcel(user_id):
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
 
-	query = """SELECT * FROM parcels WHERE owner = %d;"""
-	conn = None
-	try:
-		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-		cur = conn.cursor()
-		cur.execute(query, (user_id,))
-		conn.commit()
-	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
-	finally:
-		if conn is not None:
-			conn.close()
-
-	if cur.fetchall():
-		return jsonify({'Message': "Parcels for user"}), 200
+	query = """SELECT * FROM parcels WHERE owner = %s;"""
+	connect_to_db()
+	parcels.cur.execute(query, (user_id,))
+	parcels.conn.commit()
+	result = parcels.cur.fetchall()
+	if result != None:
+		parcel_dict = dict()
+		for row in result:
+			parcel_dict['id'] = row[0]
+		parcels.conn.close()
+		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
-		abort(400, "User or parcels not found")
+		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
+	
 
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login_user():
