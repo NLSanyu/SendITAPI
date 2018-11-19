@@ -3,10 +3,10 @@ import datetime
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
+conn = None
+cur = None
 query = ""
 status = "Cancelled"
-conn = None
-
 
 @app.route('/api/v1/parcels', methods=['GET'])
 def get_all_parcels():
@@ -15,14 +15,16 @@ def get_all_parcels():
 	"""
 	query = """SELECT * FROM parcels;"""
 	connect()
-	res = execute_get_query(query)
-	if res:
-		parcels = res.fetchall()
-		if parcels:
-			return jsonify({'parcels': 'Parcels'}), 200
-		#return jsonify({'parcels': parcels}), 200
+	cur.execute(query)
+	conn.commit()
+	result = cur.fetchall()
+	if result != None:
+		parcel_dict = dict()
+		for row in result:
+			parcel_dict['id'] = row[1]
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
-		abort(404, 'No parcels')
+		return jsonify({'message':'no parcels', 'status':'failure'}), 400
 
 
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
@@ -30,26 +32,20 @@ def get_parcel(parcel_id):
 	"""
 		Function for API endpoint to fetch a specific parcel delivery order
 	"""
-	query = """SELECT * FROM parcels WHERE id=%d;"""
+	query = """SELECT * FROM parcels WHERE id = %s;"""
 	if type(parcel_id) != int:
-		return jsonify({'Message': "Id should be an integer"}), 400
+		return jsonify({'message': 'id should be an integer', 'status': 'failure'}), 400
+	
+	connect()
+	cur.execute(query, (parcel_id,))
+	result = cur.fetchall()	
+	if result != None:
+		parcel_dict = dict()
+		for row in result:
+			parcel_dict['id'] = row[0]
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
-		try:
-			conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-			cur = conn.cursor()
-			cur.execute(query, (parcel_id,))
-			conn.commit()
-		except (Exception, psycopg2.DatabaseError) as error:
-			print(error)
-		finally:
-			if conn is not None:
-				conn.close()
-
-	res = cur.fetchall()	
-	if res:
-		return jsonify({'parcel': 'parcel'}), 200
-	else:
-		abort(404, "No parcel with this id")
+		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
 
 
 @app.route('/api/v1/parcels/<int:parcel_id>/cancel', methods=['PUT'])
@@ -58,7 +54,19 @@ def cancel_order(parcel_id):
 		Function for API endpoint to cancel a parcel delivery order
 	"""
 	query = """SELECT * FROM parcels WHERE id=%d AND status <> %s;"""
-	conn = None
+	connect()
+	cur.execute()
+	result = cur.fetchall()
+	if result != None:
+		for row in cur:
+			if row[9] == "Delivered":
+				abort(400, 'Parcel already delivered')
+			else:
+				query = """UPDATE parcels SET status = %s WHERE id = %s"""
+				cur = conn.cursor()
+				cur.execute(query, (status, parcel_id, ))	
+		else: 
+			abort(404, 'Parcel non-existent')	
 	try:
 		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
 		cur = conn.cursor()
@@ -151,11 +159,13 @@ def create_order():
 		return jsonify({'Message': "Parcel created"}), 201
 
 def connect():
+	global conn
+	global cur
 	try:
 		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
 		cur = conn.cursor()
 	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
+		return jsonify({'message':'error', 'status':'failure'})
 
 
 def execute_get_query(q):
