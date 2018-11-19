@@ -1,7 +1,6 @@
 import psycopg2
 import datetime, re
 from app.api import parcels
-from app.api.parcels import execute_get_query
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
 

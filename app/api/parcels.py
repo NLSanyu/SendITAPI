@@ -14,7 +14,7 @@ def get_all_parcels():
 		Function for API endpoint to fetch all parcel delivery orders
 	"""
 	query = """SELECT * FROM parcels;"""
-	connect()
+	connect_to_db()
 	cur.execute(query)
 	conn.commit()
 	result = cur.fetchall()
@@ -22,10 +22,12 @@ def get_all_parcels():
 		parcel_dict = dict()
 		for row in result:
 			parcel_dict['id'] = row[1]
+		conn.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
+		conn.close()
 	else:
 		return jsonify({'message':'no parcels', 'status':'failure'}), 400
-
+	
 
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
 def get_parcel(parcel_id):
@@ -36,15 +38,18 @@ def get_parcel(parcel_id):
 	if type(parcel_id) != int:
 		return jsonify({'message': 'id should be an integer', 'status': 'failure'}), 400
 	
-	connect()
+	connect_to_db()
 	cur.execute(query, (parcel_id,))
+	conn.commit()
 	result = cur.fetchall()	
 	if result != None:
 		parcel_dict = dict()
 		for row in result:
 			parcel_dict['id'] = row[0]
+		conn.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
+		conn.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
 
 
@@ -53,41 +58,24 @@ def cancel_order(parcel_id):
 	"""
 		Function for API endpoint to cancel a parcel delivery order
 	"""
-	query = """SELECT * FROM parcels WHERE id=%d AND status <> %s;"""
-	connect()
-	cur.execute()
+	query = """SELECT * FROM parcels WHERE id = %s AND status <> %s;"""
+	connect_to_db()
+	cur.execute(query)
 	result = cur.fetchall()
 	if result != None:
-		for row in cur:
+		for row in result:
 			if row[9] == "Delivered":
-				abort(400, 'Parcel already delivered')
+				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET status = %s WHERE id = %s"""
-				cur = conn.cursor()
-				cur.execute(query, (status, parcel_id, ))	
+				cur.execute(query, (status, parcel_id,))
+				conn.commit()
+				conn.close()
+				return jsonify({'message': 'parcel updated', 'status': 'success'}), 200			
 		else: 
-			abort(404, 'Parcel non-existent')	
-	try:
-		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-		cur = conn.cursor()
-		cur.execute(query, (parcel_id, status,))
-		conn.commit()
-		if cur.fetchall:
-			for row in cur:
-				if row[9] == "Delivered":
-					abort(400, 'Parcel already delivered')
-				else:
-					query = """UPDATE parcels SET status = %s WHERE id = %s"""
-					cur = conn.cursor()
-					cur.execute(query, (status, parcel_id, ))	
-		else: 
-			abort(404, 'Parcel non-existent')	
-	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
-	finally:
-		if conn is not None:
 			conn.close()
-
+			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
+		
 
 @app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
 def change_parcel_destination(parcel_id):
@@ -101,27 +89,23 @@ def change_parcel_destination(parcel_id):
 		if len(dest) > 124:
 			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400
 
-	query = """SELECT * FROM parcels WHERE id=%d;"""
-	try:
-		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-		cur = conn.cursor()
-		cur.execute(query, (parcel_id,))
-		conn.commit()
-		if cur.fetchall:
-			for row in cur:
-				if row[9] == "Delivered":
-					abort(400, 'Parcel already delivered')
-				else:
-					query = """UPDATE parcels SET destination = %s WHERE id = %s"""
-					cur = conn.cursor()
-					cur.execute(query, (dest, parcel_id, ))	
+	query = """SELECT * FROM parcels WHERE id = %s;"""
+	connect_to_db()
+	cur.execute(query)
+	conn.commit()
+	result = cur.fetchall()
+	if result != None:
+		for row in result:
+			if row[9] == "Delivered":
+				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
+			else:
+				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
+				cur.execute(query, (dest, parcel_id,))	
+				conn.commit()
 		else: 
-			abort(404, 'Parcel non-existent')	
-	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
-	finally:
-		if conn is not None:
-			conn.close()
+			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
+
+	conn.close()
 
 @app.route('/api/v1/parcels', methods=['POST'])
 def create_order():
@@ -143,45 +127,24 @@ def create_order():
 	description = request.json['description'] 
 	if validate_parcel_info(owner, description, pickup_location, destination):
 		query = """ INSERT INTO parcels VALUES (%d, %s, %s, %s, %s, %s, %s, %s)"""
-		conn = None
-		try:
-			conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-			cur = conn.cursor()
-			cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
-			conn.commit()
-		except (Exception, psycopg2.DatabaseError) as error:
-			print(error)
-		finally:
-			if conn is not None:
-				conn.close()
+		connect_to_db()
+		cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
+		conn.commit()
+		return jsonify({'message': 'parcel created', 'status': 'success'}), 200
 
 		#token here
-		return jsonify({'Message': "Parcel created"}), 201
 
-def connect():
+def connect_to_db():
 	global conn
 	global cur
 	try:
 		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
 		cur = conn.cursor()
 	except (Exception, psycopg2.DatabaseError) as error:
+		conn.close()
 		return jsonify({'message':'error', 'status':'failure'})
 
 
-def execute_get_query(q):
-	conn = None
-	
-	try:
-		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-		cur = conn.cursor()
-		cur.execute(q)
-		conn.commit()
-	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
-	finally:
-		if conn is not None:
-			conn.close()
-			return cur
 
 def validate_parcel_info(owner, description, pickup_location, destination):
 	"""
@@ -189,27 +152,24 @@ def validate_parcel_info(owner, description, pickup_location, destination):
 	"""
 
 	if type(owner) != int: 
-		return jsonify({'Message': 'Parcel owner must be identified by id (integer)'}), 400
+		return jsonify({'message': 'parcel owner must be identified by id (integer)', 'status': 'failure'}), 400
 
 	if description == "": 
-		return jsonify({'Message': 'Description is empty'}), 400
+		return jsonify({'message': 'description is empty', 'status': 'failure'}), 400
 	else:
 		if len(description) > 124:
-			return jsonify({'Message': 'Description should not be longer than 124 characters'}), 400
+			return jsonify({'message': 'description should not be longer than 124 characters', 'status': 'failure'}), 400
 
 	if pickup_location == "": 
-		return jsonify({'Message': 'Pickup_location is empty'}), 400
+		return jsonify({'message': 'pickup_location is empty', 'status': 'failure'}), 400
 	else:
 		if len(pickup_location) > 124:
-			return jsonify({'Message': 'Pickup location should not be longer than 124 characters'}), 400
+			return jsonify({'message': 'pickup location should not be longer than 124 characters', 'status': 'failure'}), 400
 
 	if destination == "": 
-		return jsonify({'Message': 'Destination is empty'}), 400
+		return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
 	else:
 		if len(destination) > 124:
-			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400	
+			return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400	
 
-
-if __name__ == '__main__':
-	app.run(debug=True)
 
