@@ -18,7 +18,6 @@ def get_all_users():
 	"""
 		Function for API endpoint to fetch all users
 	"""
-
 	query = "SELECT * FROM users;"
 	res = execute_get_query(query)
 	if res.fetchall:

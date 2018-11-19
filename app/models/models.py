@@ -12,8 +12,9 @@ class Database():
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
-    def create_users_table(self):
-        command = """
+    def create_tables(self):
+        commands = (
+        """
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
@@ -23,19 +24,8 @@ class Database():
             no_delivered INTEGER,
             no_in_transit INTEGER
         )
+        """,
         """
-
-        try:
-            self.cur.execute(command)
-            self.cur.close()
-            self.connection.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-        finally:
-            self.connection.close()
-
-    def create_parcels_table(self):
-        command = """
         CREATE TABLE IF NOT EXISTS parcels (
             id SERIAL PRIMARY KEY,
             owner VARCHAR(255) NOT NULL,
@@ -47,18 +37,8 @@ class Database():
             price VARCHAR(255) NOT NULL,
             status VARCHAR(255) NOT NULL
         )
+        """,
         """
-        try:
-            self.cur.execute(command)
-            self.cur.close()
-            self.connection.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-        finally:
-            self.connection.close()
-
-    def create_users_parcels_table(self):
-        command = """
         CREATE TABLE IF NOT EXISTS user_parcels (
                 user_id INTEGER NOT NULL,
                 parcel_id INTEGER NOT NULL,
@@ -71,8 +51,11 @@ class Database():
                     ON UPDATE CASCADE ON DELETE CASCADE
         )
         """
+        )
+
         try:
-            self.cur.execute(command)
+            for command in commands:
+                self.cur.execute(command)
             self.cur.close()
             self.connection.commit()
         except (Exception, psycopg2.DatabaseError) as error:
@@ -80,6 +63,8 @@ class Database():
         finally:
             self.connection.close()
 
+
+   
 
 
   
