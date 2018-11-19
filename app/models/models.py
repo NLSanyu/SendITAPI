@@ -1,6 +1,6 @@
 import psycopg2
 
-class DatabaseTables():
+class Database():
 
     command = ""
 
@@ -14,7 +14,7 @@ class DatabaseTables():
 
     def create_users_table(self):
         command = """
-        CREATE TABLE users (
+        CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
@@ -36,7 +36,7 @@ class DatabaseTables():
 
     def create_parcels_table(self):
         command = """
-        CREATE TABLE parcels (
+        CREATE TABLE IF NOT EXISTS parcels (
             id SERIAL PRIMARY KEY,
             owner VARCHAR(255) NOT NULL,
             description VARCHAR(255) NOT NULL,
@@ -59,7 +59,7 @@ class DatabaseTables():
 
     def create_users_parcels_table(self):
         command = """
-        CREATE TABLE user_parcels (
+        CREATE TABLE IF NOT EXISTS user_parcels (
                 user_id INTEGER NOT NULL,
                 parcel_id INTEGER NOT NULL,
                 PRIMARY KEY (user_id , parcel_id),
