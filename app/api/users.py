@@ -1,11 +1,9 @@
+import psycopg2
 import datetime, re
 from app.api import parcels
 from app.api.parcels import execute_get_query
 from flask import Flask, request, jsonify, abort, make_response
-from app.models import DatabaseTables
 from app import app
-import psycopg2
-
 
 #api
 @app.route('/api/v1', methods=['GET'])

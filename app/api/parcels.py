@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
 query = ""
-status = "Delivered"
+status = "Cancelled"
 conn = None
 
 
@@ -94,7 +94,6 @@ def change_parcel_destination(parcel_id):
 			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400
 
 	query = """SELECT * FROM parcels WHERE id=%d;"""
-	conn = None
 	try:
 		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
 		cur = conn.cursor()
