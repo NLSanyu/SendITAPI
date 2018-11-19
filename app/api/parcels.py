@@ -58,7 +58,6 @@ def cancel_order(parcel_id):
 	"""
 		Function for API endpoint to cancel a parcel delivery order
 	"""
-
 	query = """SELECT * FROM parcels WHERE id=%d AND status <> %s;"""
 	conn = None
 	try:
@@ -82,6 +81,41 @@ def cancel_order(parcel_id):
 		if conn is not None:
 			conn.close()
 
+
+@app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
+def change_order_destination(parcel_id):
+	"""
+		Function for API endpoint to change the destination of a parcel delivery order
+	"""
+	dest = request.json['destination']
+	if dest == "": 
+		return jsonify({'Message': 'Description is empty'}), 400
+	else:
+		if len(dest) > 124:
+			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400
+
+	query = """SELECT * FROM parcels WHERE id=%d;"""
+	conn = None
+	try:
+		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
+		cur = conn.cursor()
+		cur.execute(query, (parcel_id, status,))
+		conn.commit()
+		if cur.fetch:
+			for row in cur:
+				if row[9] == "Delivered":
+					abort(400, 'Parcel already delivered')
+				else:
+					query = """UPDATE parcels SET destination = %s WHERE id = %s"""
+					cur = conn.cursor()
+					cur.execute(query, (status, parcel_id, ))	
+		else: 
+			abort(404, 'Parcel non-existent')	
+	except (Exception, psycopg2.DatabaseError) as error:
+		print(error)
+	finally:
+		if conn is not None:
+			conn.close()
 
 @app.route('/api/v1/parcels', methods=['POST'])
 def create_order():
