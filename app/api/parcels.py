@@ -24,7 +24,6 @@ def get_all_parcels():
 			parcel_dict['id'] = row[1]
 		conn.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
-		conn.close()
 	else:
 		return jsonify({'message':'no parcels', 'status':'failure'}), 400
 	

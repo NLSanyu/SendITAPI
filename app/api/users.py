@@ -1,6 +1,7 @@
 import psycopg2
 import datetime, re
 from app.api import parcels
+from app.api.parcels import connect_to_db
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
@@ -19,28 +20,21 @@ def get_all_users():
 	"""
 		Function for API endpoint to fetch all users
 	"""
-	query = "SELECT * FROM users;"
-	
-	try:
-		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-		cur = conn.cursor()
-		cur.execute(query)
-		conn.commit()
-		result = cur.fetchall
-		users_dict = dict()
+	query = """SELECT * FROM users;"""
+	connect_to_db()
+	parcels.cur.execute(query)
+	parcels.conn.commit()
+	result = parcels.cur.fetchall()
+	if result != None:
+		user_dict = dict()
 		for row in result:
-			users_dict['id'] = row[0]
-			users_dict['username'] = row[1]
-		return jsonify({'users': users_dict}), 200
-		#else:
-			#abort(404, 'No users yet')
-	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
-		return jsonify({"Error": str(error)}), 400
-	finally:
-		if conn is not None:
-			cur.close()
-			conn.close()
+			user_dict['id'] = row[0]
+		parcels.conn.close()
+		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': user_dict}), 200
+	else:
+		return jsonify({'message':'no users', 'status':'failure'}), 400
+	
+	
 			
 	
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
