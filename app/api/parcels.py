@@ -17,7 +17,7 @@ def get_all_parcels():
 	connect()
 	res = execute_get_query(query)
 	if res:
-		parcels = res.fetchall
+		parcels = res.fetchall()
 		if parcels:
 			return jsonify({'parcels': 'Parcels'}), 200
 		#return jsonify({'parcels': parcels}), 200
@@ -45,7 +45,7 @@ def get_parcel(parcel_id):
 			if conn is not None:
 				conn.close()
 
-	res = cur.fetch()	
+	res = cur.fetchall()	
 	if res:
 		return jsonify({'parcel': 'parcel'}), 200
 	else:

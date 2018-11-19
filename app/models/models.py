@@ -2,8 +2,6 @@ import psycopg2
 
 class Database():
 
-    command = ""
-
     def __init__(self):
         try:
             self.connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
@@ -40,15 +38,15 @@ class Database():
         """,
         """
         CREATE TABLE IF NOT EXISTS user_parcels (
-                user_id INTEGER NOT NULL,
-                parcel_id INTEGER NOT NULL,
-                PRIMARY KEY (user_id , parcel_id),
-                FOREIGN KEY (user_id)
-                    REFERENCES users (id)
-                    ON UPDATE CASCADE ON DELETE CASCADE,
-                FOREIGN KEY (parcel_id)
-                    REFERENCES parcels (id)
-                    ON UPDATE CASCADE ON DELETE CASCADE
+            user_id INTEGER NOT NULL,
+            parcel_id INTEGER NOT NULL,
+            PRIMARY KEY (user_id , parcel_id),
+            FOREIGN KEY (user_id)
+                REFERENCES users (id)
+                ON UPDATE CASCADE ON DELETE CASCADE,
+            FOREIGN KEY (parcel_id)
+                REFERENCES parcels (id)
+                ON UPDATE CASCADE ON DELETE CASCADE
         )
         """
         )

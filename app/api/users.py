@@ -29,25 +29,21 @@ def get_all_users():
 		conn.commit()
 		result = cur.fetchall
 		users_dict = dict()
-		if result:
-			for row in result:
-				users_dict['id'] = row[0]
-				users_dict['username'] = row[1]
-			return jsonify({'users': users_dict}), 200
-		else:
-			abort(404, 'No users yet')
+		for row in result:
+			users_dict['id'] = row[0]
+			users_dict['username'] = row[1]
+		return jsonify({'users': users_dict}), 200
+		#else:
+			#abort(404, 'No users yet')
 	except (Exception, psycopg2.DatabaseError) as error:
 		print(error)
-		return jsonify({"Error": "error"}), 400
+		return jsonify({"Error": str(error)}), 400
 	finally:
 		if conn is not None:
 			cur.close()
 			conn.close()
 			
 	
-
-
-
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
 def get_user_parcel(user_id):
 	"""
@@ -72,13 +68,11 @@ def get_user_parcel(user_id):
 	else:
 		abort(400, "User or parcels not found")
 
-
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login_user():
 	"""
 		Function for API endpoint to log a user in
 	"""
-
 	username = request.json['username'] 
 	password = request.json['passwor'] 
 	email=""
@@ -155,5 +149,3 @@ def validate_user_info(username, email, password, signup):
 			if not re.match(pattern, email):
 				return jsonify({'Message': 'Enter a valid email'}), 400
 
-if __name__ == '__main__':
-	app.run(debug=True)
