@@ -1,5 +1,6 @@
 import psycopg2
 import datetime, re
+from werkzeug import generate_password_hash
 from app.api import parcels
 from app.api.parcels import connect_to_db
 from flask import Flask, request, jsonify, abort, make_response
@@ -65,25 +66,23 @@ def login_user():
 		Function for API endpoint to log a user in
 	"""
 	req = request.json
-	username = request.json['username'] 
-	password = request.json['passwor'] 
+	if 'username' in req.keys():
+		username = request.json['username'] 
+	if 'password' in req.keys():
+		password = request.json['password_hash'] 
 	email=""
-	if validate_user_info(username, email, password, False):
-		query = """SELECT * FROM users WHERE username = %s AND passwor=%s;"""
-		conn = None
-		try:
-			conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-			cur = conn.cursor()
-			cur.execute(query, (username, password,))
-			conn.commit()
-		except (Exception, psycopg2.DatabaseError) as error:
-			print(error)
-		finally:
-			if conn is not None:
-				conn.close()
 
-		if cur.fetchall():
-			return jsonify({'Message': "User logged in"}), 200
+	if validate_user_info(username, email, password, False):
+		password = generate_password_hash(password)
+		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
+		connect_to_db()
+		parcels.cur.execute(query, (username, password,))
+		parcels.conn.commit()
+		result = parcels.cur.fetchall()
+		if result != None:
+			parcels.cur.close()
+			parcels.conn.close()
+			return jsonify({'message': 'user logged in', 'status': 'success'}), 200
 			#token here
 
 
@@ -92,27 +91,24 @@ def create_user():
 	"""
 		Function for API endpoint to sign a user up
 	"""
+	req = request.json
+	if 'username' in req.keys():
+		username = request.json['username'] 
+	if 'email' in req.keys():
+		email = request.json['email'] 
+	if 'password' in req.keys(): 
+		password = request.json['password'] 
 
-	username = request.json['username'] 
-	email = request.json['email']  
-	password = request.json['passwor'] 
+	password_hash = generate_password_hash(password)
+
 	if validate_user_info(username, email, password, True):
-		query = """ INSERT INTO users (username, email, passwor) VALUES (%s, %s, %s)"""
-		conn = None
-		try:
-			conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-			cur = conn.cursor()
-			cur.execute(query, (username, email, password,))
-			conn.commit()
-		except (Exception, psycopg2.DatabaseError) as error:
-			print(error)
-		finally:
-			if conn is not None:
-				conn.close()
-
-		#get token here?
-
-		return jsonify({'Message': "User created"}), 201
+		query = """ INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
+		connect_to_db()
+		parcels.cur.execute(query, (username, email, password_hash,))
+		parcels.conn.commit()
+		parcels.cur.close()
+		parcels.conn.close()
+		return jsonify({'message': "user created"}), 201
 
 
 
