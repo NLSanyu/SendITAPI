@@ -60,10 +60,10 @@ def get_user_parcel(user_id):
 		abort(400, "User or parcels not found")
 
 
-@app.route('/api/v1/signup', methods=['POST'])
+@app.route('/api/v1/auth/login', methods=['POST'])
 def login_user():
 	"""
-		Function for API endpoint to create a parcel delivery order
+		Function for API endpoint to log a user in
 	"""
 
 	username = request.json['username'] 
@@ -88,10 +88,10 @@ def login_user():
 			#token here
 
 
-@app.route('/api/v1/signup', methods=['POST'])
+@app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
 	"""
-		Function for API endpoint to create a parcel delivery order
+		Function for API endpoint to sign a user up
 	"""
 
 	username = request.json['username'] 
