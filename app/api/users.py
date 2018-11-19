@@ -13,11 +13,6 @@ def api_home():
 	"""
 		Function for API home
 	"""
-	db_conn = DatabaseTables()
-	db_conn.create_users_table
-	db_conn.create_parcels_table
-	db_conn.create_users_parcels_table
-
 	return "<p>SendIT API</p>"
 
 @app.route('/api/v1/users', methods=['GET'])

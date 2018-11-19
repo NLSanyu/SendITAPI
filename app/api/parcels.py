@@ -1,5 +1,5 @@
-import datetime
 import psycopg2
+import datetime
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
@@ -31,7 +31,6 @@ def get_parcel(parcel_id):
 		Function for API endpoint to fetch a specific parcel delivery order
 	"""
 	query = """SELECT * FROM parcels WHERE id=%d;"""
-	conn = None
 	if type(parcel_id) != int:
 		return jsonify({'Message': "Id should be an integer"}), 400
 	else:
@@ -65,7 +64,7 @@ def cancel_order(parcel_id):
 		cur = conn.cursor()
 		cur.execute(query, (parcel_id, status,))
 		conn.commit()
-		if cur.fetch:
+		if cur.fetchall:
 			for row in cur:
 				if row[9] == "Delivered":
 					abort(400, 'Parcel already delivered')
@@ -83,13 +82,13 @@ def cancel_order(parcel_id):
 
 
 @app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
-def change_order_destination(parcel_id):
+def change_parcel_destination(parcel_id):
 	"""
 		Function for API endpoint to change the destination of a parcel delivery order
 	"""
 	dest = request.json['destination']
 	if dest == "": 
-		return jsonify({'Message': 'Description is empty'}), 400
+		return jsonify({'Message': 'Destination is empty'}), 400
 	else:
 		if len(dest) > 124:
 			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400
@@ -99,16 +98,16 @@ def change_order_destination(parcel_id):
 	try:
 		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
 		cur = conn.cursor()
-		cur.execute(query, (parcel_id, status,))
+		cur.execute(query, (parcel_id,))
 		conn.commit()
-		if cur.fetch:
+		if cur.fetchall:
 			for row in cur:
 				if row[9] == "Delivered":
 					abort(400, 'Parcel already delivered')
 				else:
 					query = """UPDATE parcels SET destination = %s WHERE id = %s"""
 					cur = conn.cursor()
-					cur.execute(query, (status, parcel_id, ))	
+					cur.execute(query, (dest, parcel_id, ))	
 		else: 
 			abort(404, 'Parcel non-existent')	
 	except (Exception, psycopg2.DatabaseError) as error:
@@ -196,7 +195,7 @@ def validate_parcel_info(owner, description, pickup_location, destination):
 			return jsonify({'Message': 'Pickup location should not be longer than 124 characters'}), 400
 
 	if destination == "": 
-		return jsonify({'Message': 'Description is empty'}), 400
+		return jsonify({'Message': 'Destination is empty'}), 400
 	else:
 		if len(destination) > 124:
 			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400	
