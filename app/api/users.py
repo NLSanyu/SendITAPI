@@ -98,16 +98,19 @@ def create_user():
 	if 'password' in req.keys(): 
 		password = request.json['password'] 
 
-	password_hash = generate_password_hash(password)
+	#password_hash = generate_password_hash(password)
 
-	if validate_user_info(username, email, password, True):
-		query = """ INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
+	#if validate_user_info(username, email, password, True):
+	if True:
+		query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
 		connect_to_db()
-		db.cur.execute(query, (username, email, password_hash,))
+		db.cur.execute(query, (username, email, password,))
 		db.connection.commit()
 		db.cur.close()
 		db.connection.close()
 		return jsonify({'message': "user created"}), 201
+	else:
+		return jsonify({'message': "user not created", 'status': 'failure'}), 201
 
 
 
@@ -117,7 +120,7 @@ def validate_user_info(username, email, password, signup):
 	"""
 
 	if username == "": 
-		return jsonify({'Message': 'Username is empty'}), 400
+		return jsonify({'message': 'username is empty', 'status': 'failure'}), 400
 	else:
 		if len(username) > 32:
 			return jsonify({'Message': 'Username should not longer than 32 characters'}), 400	
