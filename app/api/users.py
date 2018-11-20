@@ -1,12 +1,11 @@
 import psycopg2
 import datetime, re
-from werkzeug import generate_password_hash
-from app.api import parcels
-from app.api.parcels import connect_to_db
+from werkzeug.security import generate_password_hash, check_password_hash
+from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, abort, make_response
 from app import app
 
-conn = None
+db = None
 
 #api
 @app.route('/api/v1', methods=['GET'])
@@ -23,14 +22,14 @@ def get_all_users():
 	"""
 	query = """SELECT * FROM users;"""
 	connect_to_db()
-	parcels.cur.execute(query)
-	parcels.conn.commit()
-	result = parcels.cur.fetchall()
+	db.cur.execute(query)
+	db.connection.commit()
+	result = db.cur.fetchall()
 	if result != None:
 		user_dict = dict()
 		for row in result:
 			user_dict['id'] = row[0]
-		parcels.conn.close()
+		db.connection.close()
 		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': user_dict}), 200
 	else:
 		return jsonify({'message':'no users', 'status':'failure'}), 400
@@ -47,14 +46,14 @@ def get_user_parcel(user_id):
 
 	query = """SELECT * FROM parcels WHERE owner = %(int)s;"""
 	connect_to_db()
-	parcels.cur.execute(query, (user_id,))
-	parcels.conn.commit()
-	result = parcels.cur.fetchall()
+	db.cur.execute(query, (user_id,))
+	db.connection.commit()
+	result = db.cur.fetchall()
 	if result != None:
 		parcel_dict = dict()
 		for row in result:
 			parcel_dict['id'] = row[0]
-		parcels.conn.close()
+		db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
@@ -76,12 +75,12 @@ def login_user():
 		password = generate_password_hash(password)
 		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
 		connect_to_db()
-		parcels.cur.execute(query, (username, password,))
-		parcels.conn.commit()
-		result = parcels.cur.fetchall()
+		db.cur.execute(query, (username, password,))
+		db.connection.commit()
+		result = db.cur.fetchall()
 		if result != None:
-			parcels.cur.close()
-			parcels.conn.close()
+			db.cur.close()
+			db.connection.close()
 			return jsonify({'message': 'user logged in', 'status': 'success'}), 200
 			#token here
 
@@ -104,10 +103,10 @@ def create_user():
 	if validate_user_info(username, email, password, True):
 		query = """ INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
 		connect_to_db()
-		parcels.cur.execute(query, (username, email, password_hash,))
-		parcels.conn.commit()
-		parcels.cur.close()
-		parcels.conn.close()
+		db.cur.execute(query, (username, email, password_hash,))
+		db.connection.commit()
+		db.cur.close()
+		db.connection.close()
 		return jsonify({'message': "user created"}), 201
 
 
@@ -137,3 +136,7 @@ def validate_user_info(username, email, password, signup):
 			if not re.match(pattern, email):
 				return jsonify({'Message': 'Enter a valid email'}), 400
 
+
+def connect_to_db():
+	global db
+	db = DatabaseConnection()

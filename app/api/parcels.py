@@ -1,12 +1,13 @@
 import psycopg2
 import datetime
 from flask import Flask, request, jsonify, abort, make_response
+from app.models.models import DatabaseConnection
 from app import app
 
-conn = None
-cur = None
 query = ""
 status = "Cancelled"
+
+db = None
 
 @app.route('/api/v1/parcels', methods=['GET'])
 def get_all_parcels():
@@ -15,14 +16,14 @@ def get_all_parcels():
 	"""
 	query = """SELECT * FROM parcels;"""
 	connect_to_db()
-	cur.execute(query)
-	conn.commit()
-	result = cur.fetchall()
+	db.cur.execute(query)
+	db.connection.commit()
+	result = db.cur.fetchall()
 	if result != None:
 		parcel_dict = dict()
 		for row in result:
 			parcel_dict['id'] = row[1]
-		conn.close()
+		db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
 		return jsonify({'message':'no parcels', 'status':'failure'}), 400
@@ -38,17 +39,17 @@ def get_parcel(parcel_id):
 		return jsonify({'message': 'id should be an integer', 'status': 'failure'}), 400
 	
 	connect_to_db()
-	cur.execute(query, (parcel_id,))
-	conn.commit()
-	result = cur.fetchall()	
+	db.cur.execute(query, (parcel_id,))
+	db.connection.commit()
+	result = db.cur.fetchall()	
 	if result != None:
 		parcel_dict = dict()
 		for row in result:
 			parcel_dict['id'] = row[0]
-		conn.close()
+		db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
 	else:
-		conn.close()
+		db.connection.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
 
 
@@ -59,20 +60,20 @@ def cancel_order(parcel_id):
 	"""
 	query = """SELECT * FROM parcels WHERE id = %s AND status <> %s;"""
 	connect_to_db()
-	cur.execute(query)
-	result = cur.fetchall()
+	db.cur.execute(query)
+	result = db.cur.fetchall()
 	if result != None:
 		for row in result:
 			if row[9] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET status = %s WHERE id = %s"""
-				cur.execute(query, (status, parcel_id,))
-				conn.commit()
-				conn.close()
+				db.cur.execute(query, (status, parcel_id,))
+				db.connection.commit()
+				db.connection.close()
 				return jsonify({'message': 'parcel updated', 'status': 'success'}), 200			
 		else: 
-			conn.close()
+			db.connection.close()
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
 		
 
@@ -90,21 +91,21 @@ def change_parcel_destination(parcel_id):
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	connect_to_db()
-	cur.execute(query)
-	conn.commit()
-	result = cur.fetchall()
+	db.cur.execute(query)
+	db.connection.commit()
+	result = db.cur.fetchall()
 	if result != None:
 		for row in result:
 			if row[9] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
-				cur.execute(query, (dest, parcel_id,))	
-				conn.commit()
+				db.cur.execute(query, (dest, parcel_id,))	
+				db.connection.commit()
 		else: 
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
 
-	conn.close()
+	db.connection.close()
 
 @app.route('/api/v1/parcels', methods=['POST'])
 def create_order():
@@ -127,13 +128,16 @@ def create_order():
 	if validate_parcel_info(owner, description, pickup_location, destination):
 		query = """ INSERT INTO parcels VALUES (%d, %s, %s, %s, %s, %s, %s, %s)"""
 		connect_to_db()
-		cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
-		conn.commit()
+		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
+		db.connection.commit()
 		return jsonify({'message': 'parcel created', 'status': 'success'}), 200
 
 		#token here
 
 def connect_to_db():
+	global db
+	db = DatabaseConnection()
+	"""
 	global conn
 	global cur
 	try:
@@ -142,7 +146,8 @@ def connect_to_db():
 	except (Exception, psycopg2.DatabaseError) as error:
 		conn.close()
 		return jsonify({'message':'error', 'status':'failure'})
-
+	"""
+		
 
 
 def validate_parcel_info(owner, description, pickup_location, destination):

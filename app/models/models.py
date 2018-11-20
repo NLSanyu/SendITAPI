@@ -1,13 +1,14 @@
 import psycopg2
 
-class Database():
+class DatabaseConnection():
 
     def __init__(self):
         try:
             self.connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
-            #self.connection.autocommit = True
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
+            self.cur.close()
+            self.connection.close()
             print(error)
 
     def create_tables(self):
