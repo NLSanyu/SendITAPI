@@ -10,7 +10,6 @@ class DatabaseConnection():
         except (Exception, psycopg2.DatabaseError) as error:
             self.cur.close()
             self.connection.close()
-            return jsonify({'message': 'database error', 'error': str(error), 'status': 'failure'}), 500
 
     def create_tables(self):
         commands = (
