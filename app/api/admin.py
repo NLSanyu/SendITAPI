@@ -13,11 +13,11 @@ def change_parcel_status(parcel_id):
 		Function for API endpoint to change the status a parcel delivery order
 	"""
 	all_status = ["Delivered", "Cancel", "New", "In Transit", "Not picked up"]
-	data = request.json
-	if 'status' in data.keys():
+	req = request.json
+	if 'status' in req.keys():
 		status = request.json('status')
 		if status in all_status:
-			query = """SELECT * FROM parcels WHERE id=%s AND status<>%s;"""
+			query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
 			connect_to_db()
 			db.cur.execute(query, (parcel_id, status,))
 			db.connection.commit()
