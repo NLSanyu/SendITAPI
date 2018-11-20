@@ -125,8 +125,9 @@ def create_order():
 	pickup_location = request.json['pickup_location'] 
 	destination = request.json['destination']  
 	description = request.json['description'] 
-	if validate_parcel_info(owner, description, pickup_location, destination):
-		query = """ INSERT INTO parcels VALUES (%d, %s, %s, %s, %s, %s, %s, %s)"""
+	#if validate_parcel_info(owner, description, pickup_location, destination):
+	if True:
+		query = """INSERT INTO parcels (owner, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 		connect_to_db()
 		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
 		db.connection.commit()

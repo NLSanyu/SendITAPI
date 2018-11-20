@@ -44,7 +44,7 @@ def get_user_parcel(user_id):
 	if type(user_id) != int:
 		return jsonify({'message':'user musst be identified by an integer', 'status':'failure'}), 400
 
-	query = """SELECT * FROM parcels WHERE owner = %(int)s;"""
+	query = """SELECT * FROM parcels WHERE owner = %s;"""
 	connect_to_db()
 	db.cur.execute(query, (user_id,))
 	db.connection.commit()
@@ -100,7 +100,8 @@ def create_user():
 
 	#password_hash = generate_password_hash(password)
 
-	if validate_user_info(username, email, password, True):
+	#if validate_user_info(username, email, password, True):
+	if True:
 		query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
 		connect_to_db()
 		db.cur.execute(query, (username, email, password,))
@@ -109,8 +110,7 @@ def create_user():
 		db.connection.close()
 		return jsonify({'message': "user created"}), 201
 	else:
-		return jsonify({'message': "user not created", 'status': 'failure'}), 201
-
+		return jsonify({'message': "user not created", 'status': 'failure'}), 400
 
 
 def validate_user_info(username, email, password, signup):
