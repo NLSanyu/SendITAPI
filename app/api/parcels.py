@@ -125,8 +125,7 @@ def create_order():
 	pickup_location = request.json['pickup_location'] 
 	destination = request.json['destination']  
 	description = request.json['description'] 
-	#if validate_parcel_info(owner, description, pickup_location, destination):
-	if True:
+	if validate_parcel_info(owner, description, pickup_location, destination):
 		query = """INSERT INTO parcels (owner, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 		connect_to_db()
 		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
@@ -179,4 +178,4 @@ def validate_parcel_info(owner, description, pickup_location, destination):
 		if len(destination) > 124:
 			return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400	
 
-
+	return True

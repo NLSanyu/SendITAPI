@@ -100,8 +100,7 @@ def create_user():
 
 	#password_hash = generate_password_hash(password)
 
-	#if validate_user_info(username, email, password, True):
-	if True:
+	if validate_user_info(username, email, password, True):
 		query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
 		connect_to_db()
 		db.cur.execute(query, (username, email, password,))
@@ -122,13 +121,13 @@ def validate_user_info(username, email, password, signup):
 		return jsonify({'message': 'username is empty', 'status': 'failure'}), 400
 	else:
 		if len(username) > 32:
-			return jsonify({'Message': 'username should not longer than 32 characters', 'status': 'failure'}), 400	
+			return jsonify({'message': 'username should not longer than 32 characters', 'status': 'failure'}), 400	
 
 	if password == "": 
 		return jsonify({'message': 'password is empty', 'status': 'failure'}), 400
 	else:
 		if len(password) < 6:
-			return jsonify({'Message': 'Password should be longer than 6 characters'}), 400	
+			return jsonify({'message': 'password should be longer than 6 characters', 'status': 'failure'}), 400	
 
 	if signup:
 		if email == "": 
@@ -137,6 +136,8 @@ def validate_user_info(username, email, password, signup):
 			pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 			if not re.match(pattern, email):
 				return jsonify({'message': 'enter a valid email', 'status': 'failure'}), 400
+
+	return True
 
 
 def connect_to_db():
