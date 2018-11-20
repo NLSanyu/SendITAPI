@@ -1,6 +1,7 @@
 import psycopg2
 import datetime
 from flask import Flask, request, jsonify, make_response
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
 from app import app
 
@@ -10,10 +11,13 @@ status = "Cancelled"
 db = None
 
 @app.route('/api/v1/parcels', methods=['GET'])
+@jwt_required
 def get_all_parcels():
 	"""
 		Function for API endpoint to fetch all parcel delivery orders
 	"""
+	current_user = get_jwt_identity()
+
 	query = """SELECT * FROM parcels;"""
 	connect_to_db()
 	db.cur.execute(query)
@@ -27,10 +31,13 @@ def get_all_parcels():
 	
 
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
+@jwt_required
 def get_parcel(parcel_id):
 	"""
 		Function for API endpoint to fetch a specific parcel delivery order
 	"""
+	current_user = get_jwt_identity()
+
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	if type(parcel_id) != int:
 		return jsonify({'message': 'id should be an integer', 'status': 'failure'}), 400
@@ -48,10 +55,13 @@ def get_parcel(parcel_id):
 
 
 @app.route('/api/v1/parcels/<int:parcel_id>/cancel', methods=['PUT'])
+@jwt_required
 def cancel_order(parcel_id):
 	"""
 		Function for API endpoint to cancel a parcel delivery order
 	"""
+	current_user = get_jwt_identity()
+	
 	query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
 	connect_to_db()
 	db.cur.execute(query, (parcel_id, status,))
@@ -72,10 +82,13 @@ def cancel_order(parcel_id):
 		
 
 @app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
+@jwt_required
 def change_parcel_destination(parcel_id):
 	"""
 		Function for API endpoint to change the destination of a parcel delivery order
 	"""
+	current_user = get_jwt_identity()
+
 	req = request.json
 	if 'destination' not in req.keys():
 		return jsonify({'message': 'destination not provided', 'status': 'failure'}), 400
@@ -107,10 +120,12 @@ def change_parcel_destination(parcel_id):
 	db.connection.close()
 
 @app.route('/api/v1/parcels', methods=['POST'])
+@jwt_required
 def create_order():
 	"""
 		Function for API endpoint to create a parcel delivery order
 	"""
+	current_user = get_jwt_identity()
 	
 	date = datetime.datetime.now()
 	date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
@@ -138,18 +153,7 @@ def create_order():
 def connect_to_db():
 	global db
 	db = DatabaseConnection()
-	"""
-	global conn
-	global cur
-	try:
-		conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-		cur = conn.cursor()
-	except (Exception, psycopg2.DatabaseError) as error:
-		conn.close()
-		return jsonify({'message':'error', 'status':'failure'})
-	"""
-		
-
+	
 
 def validate_parcel_info(owner, description, pickup_location, destination):
 	"""

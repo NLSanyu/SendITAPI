@@ -1,6 +1,7 @@
 import psycopg2
 import datetime, re
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
 from app import app
@@ -16,10 +17,12 @@ def api_home():
 	return "<p>SendIT API</p>"
 
 @app.route('/api/v1/users', methods=['GET'])
+@jwt_required
 def get_all_users():
 	"""
 		Function for API endpoint to fetch all users
 	"""
+	current_user = get_jwt_identity()
 	query = """SELECT * FROM users;"""
 	connect_to_db()
 	db.cur.execute(query)
@@ -34,10 +37,12 @@ def get_all_users():
 			
 	
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
+@jwt_required
 def get_user_parcel(user_id):
 	"""
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
+	current_user = get_jwt_identity()
 	if type(user_id) != int:
 		return jsonify({'message':'user must be identified by an integer', 'status':'failure'}), 400
 
@@ -75,9 +80,10 @@ def login_user():
 		if result != None:
 			db.cur.close()
 			db.connection.close()
-			return jsonify({'message': 'user logged in', 'status': 'success'}), 200
-
-			#token here
+			access_token = create_access_token(identity = username)
+			return jsonify({'message': 'user logged in', 'status': 'success', 'access_token': access_token}), 200
+		else:
+			return jsonify({'message': 'user log in failed', 'status': 'failure'})
 
 
 @app.route('/api/v1/auth/signup', methods=['POST'])
