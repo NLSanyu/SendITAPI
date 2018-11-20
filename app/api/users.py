@@ -26,11 +26,8 @@ def get_all_users():
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result != None:
-		user_dict = dict()
-		for row in result:
-			user_dict['id'] = row[0]
 		db.connection.close()
-		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': user_dict}), 200
+		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': result}), 200
 	else:
 		return jsonify({'message':'no users', 'status':'failure'}), 400
 	
@@ -42,7 +39,7 @@ def get_user_parcel(user_id):
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
 	if type(user_id) != int:
-		return jsonify({'message':'user musst be identified by an integer', 'status':'failure'}), 400
+		return jsonify({'message':'user must be identified by an integer', 'status':'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE owner = %s;"""
 	connect_to_db()
@@ -50,11 +47,8 @@ def get_user_parcel(user_id):
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result != None:
-		parcel_dict = dict()
-		for row in result:
-			parcel_dict['id'] = row[0]
 		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
 	
@@ -68,7 +62,7 @@ def login_user():
 	if 'username' in req.keys():
 		username = request.json['username'] 
 	if 'password' in req.keys():
-		password = request.json['password_hash'] 
+		password = request.json['password'] 
 	email=""
 
 	if validate_user_info(username, email, password, False):
@@ -82,6 +76,7 @@ def login_user():
 			db.cur.close()
 			db.connection.close()
 			return jsonify({'message': 'user logged in', 'status': 'success'}), 200
+
 			#token here
 
 

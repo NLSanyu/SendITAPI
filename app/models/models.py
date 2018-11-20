@@ -27,7 +27,7 @@ class DatabaseConnection():
         """
         CREATE TABLE IF NOT EXISTS parcels (
             id SERIAL PRIMARY KEY,
-            owner VARCHAR(255) NOT NULL,
+            owner INTEGER NOT NULL,
             description VARCHAR(255) NOT NULL,
             date_created VARCHAR(255) NOT NULL,
             pickup_location VARCHAR(255) NOT NULL,

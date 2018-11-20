@@ -20,11 +20,8 @@ def get_all_parcels():
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result != None:
-		parcel_dict = dict()
-		for row in result:
-			parcel_dict['id'] = row[1]
 		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
 	else:
 		return jsonify({'message':'no parcels', 'status':'failure'}), 400
 	
