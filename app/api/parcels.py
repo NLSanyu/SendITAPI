@@ -1,6 +1,6 @@
 import psycopg2
 import datetime
-from flask import Flask, request, jsonify, abort, make_response
+from flask import Flask, request, jsonify, make_response
 from app.models.models import DatabaseConnection
 from app import app
 

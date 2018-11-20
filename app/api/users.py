@@ -2,7 +2,7 @@ import psycopg2
 import datetime, re
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.models import DatabaseConnection
-from flask import Flask, request, jsonify, abort, make_response
+from flask import Flask, request, jsonify, make_response
 from app import app
 
 db = None
