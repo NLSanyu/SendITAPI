@@ -2,25 +2,24 @@ import unittest
 import os
 import json
 import pytest
-from test.base import BaseTestCase
 from app import app
 
-new_parcel = {
-	'id': 4,
-	'owner': 2,
-	'description': 'Green box',
-	'date_created': '4-11-2018',
-	'pickup_location': 'Plot 11 Colville Street',
-	'present_location': 'Shop no.25 Oasis Mall',
-	'destination': 'Shop no.25 Oasis Mall',
-	'price': 'shs 3,000',
-	'status': 'Not picked up'
-}
-
-class APITestUsers(BaseTestCase):
+class APITestUsers(unittest.TestCase):
 	def setUp(self):
-		self.app = super().create_app()
+		self.app = app
 		self.client = self.app.test_client()
+
+	def test_signup(self):
+		user = {"username": "lydia", "email": "lydia@gmail.com", "password": "pass123"}
+		response = self.client.post('/api/v1/auth/signup', json=user)
+		self.assertEqual(response.status_code, 201)
+		#self.assertIn(str(response), "user created")
+
+	def test_login(self):
+		user = {"username": "lydia", "email": "lydia@gmail.com", "password": "pass123"}
+		response = self.client.post('/api/v1/auth/login', json=user)
+		self.assertEqual(response.status_code, 201)
+		#self.assertIn(str(response), "user created")
 
 	def test_fetch_users(self):
 		"""
