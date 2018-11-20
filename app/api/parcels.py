@@ -1,7 +1,7 @@
 import psycopg2
 import datetime
 from flask import Flask, request, jsonify, make_response
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
 from app import app
 

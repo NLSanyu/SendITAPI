@@ -1,9 +1,9 @@
 import psycopg2
 import datetime, re
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
+from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
 
 db = None
