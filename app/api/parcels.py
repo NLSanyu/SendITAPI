@@ -40,11 +40,8 @@ def get_parcel(parcel_id):
 	db.connection.commit()
 	result = db.cur.fetchall()	
 	if result != None:
-		parcel_dict = dict()
-		for row in result:
-			parcel_dict['id'] = row[0]
 		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcel_dict}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
 	else:
 		db.connection.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
@@ -55,13 +52,13 @@ def cancel_order(parcel_id):
 	"""
 		Function for API endpoint to cancel a parcel delivery order
 	"""
-	query = """SELECT * FROM parcels WHERE id = %s AND status <> %s;"""
+	query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
 	connect_to_db()
-	db.cur.execute(query)
+	db.cur.execute(query, (parcel_id, status,))
 	result = db.cur.fetchall()
 	if result != None:
 		for row in result:
-			if row[9] == "Delivered":
+			if row[8] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET status = %s WHERE id = %s"""
@@ -81,26 +78,27 @@ def change_parcel_destination(parcel_id):
 	"""
 	dest = request.json['destination']
 	if dest == "": 
-		return jsonify({'Message': 'Destination is empty'}), 400
+		return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
 	else:
 		if len(dest) > 124:
-			return jsonify({'Message': 'Destination should not be longer than 124 characters'}), 400
+			return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	connect_to_db()
-	db.cur.execute(query)
+	db.cur.execute(query, (parcel_id,))
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result != None:
 		for row in result:
-			if row[9] == "Delivered":
-				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
+			if row[8] == "Delivered" or row[8] == "Cancelled":
+				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
 				db.cur.execute(query, (dest, parcel_id,))	
 				db.connection.commit()
-		else: 
-			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
+				return jsonify({'message': 'parcel destination changed', 'status': 'success'}), 400
+	else: 
+		return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
 
 	db.connection.close()
 
