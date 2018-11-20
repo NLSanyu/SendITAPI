@@ -76,6 +76,10 @@ def change_parcel_destination(parcel_id):
 	"""
 		Function for API endpoint to change the destination of a parcel delivery order
 	"""
+	req = request.json
+	if 'destination' not in req.keys():
+		return jsonify({'message': 'destination not provided', 'status': 'failure'}), 400
+
 	dest = request.json['destination']
 	if dest == "": 
 		return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
@@ -90,7 +94,7 @@ def change_parcel_destination(parcel_id):
 	result = db.cur.fetchall()
 	if result != None:
 		for row in result:
-			if row[8] == "Delivered" or row[8] == "Cancelled":
+			if (row[8] == "Delivered" or row[8] == "Cancelled"):
 				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
