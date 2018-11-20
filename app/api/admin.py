@@ -46,33 +46,27 @@ def change_parcel_location(parcel_id):
 	if 'location' in data.keys():
 		location = request.json['present_location']
 		if location == "": 
-			return jsonify({'Message': 'Present location is empty'}), 400
+			return jsonify({'message':'present locatio is empty', 'status':'failure'}), 400
 		else:
 			if len(location) > 124:
-				return jsonify({'Message': 'Present location should not be longer than 124 characters'}), 400
+				return jsonify({'message':'present location should not be longer than 124 characters', 'status':'failure'}), 400
 
 		query = """SELECT * FROM parcels WHERE id=%d;"""
-		conn = None
-		try:
-			conn = psycopg2.connect(database="testdb", user = "postgres", password = "memine", host = "localhost", port = "5432")
-			cur = conn.cursor()
-			cur.execute(query, (parcel_id,))
-			conn.commit()
-			if cur.fetchall:
-				for row in cur:
-					if row[9] == "Delivered":
-						abort(400, 'Parcel already delivered')
-					else:
-						query = """UPDATE parcels SET present_location = %s WHERE id = %s"""
-						cur = conn.cursor()
-						cur.execute(query, (location, parcel_id, ))	
-			else: 
-				abort(404, 'Parcel non-existent')	
-		except (Exception, psycopg2.DatabaseError) as error:
-			print(error)
-		finally:
-			if conn is not None:
-				conn.close()
+		connect_to_db()
+		
+		db.cur.execute(query, (parcel_id,))
+		db.connection.commit()
+		if db.cur.fetchall:
+			for row in db.cur:
+				if row[9] == "Delivered":
+					return jsonify({'message':'parcel already delivered', 'status':'failure'}), 400
+				else:
+					query = """UPDATE parcels SET present_location = %s WHERE id = %s"""
+					db.cur.execute(query, (location, parcel_id, ))	
+		else: 
+			return jsonify({'message':'parcel non-existent', 'status':'failure'}), 400	
+	else:
+		return jsonify({'message':'no location entered', 'status':'failure'}), 400	
 
 
 def connect_to_db():
