@@ -131,6 +131,8 @@ def create_order():
 		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
 		db.connection.commit()
 		return jsonify({'message': 'parcel created', 'status': 'success'}), 200
+	else:
+		return jsonify({'message': 'parcel not created', 'status': 'failure'}), 400
 
 		#token here
 
