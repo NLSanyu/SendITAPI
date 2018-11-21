@@ -3,6 +3,7 @@ import os
 import json
 import pytest
 from test.test_users import APITestUsers
+from app.models.models import Tables
 from app import app
 
 user = APITestUsers()
@@ -11,6 +12,8 @@ class APITest(unittest.TestCase):
 	def setUp(self):
 		self.app = app
 		self.client = self.app.test_client()
+		tables = Tables()
+		tables.create_tables()
 
 	def get_token(self):
 		"""
