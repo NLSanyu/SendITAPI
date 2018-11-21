@@ -24,9 +24,22 @@ def get_all_parcels():
 	db.cur.execute(query)
 	db.connection.commit()
 	result = db.cur.fetchall()
-	if result != None:
-		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
+	if result:
+		data_list = []
+		data = dict()
+		for row in result:
+			data['parcel_id'] = row[0]
+			data['owner_id'] = row[1]
+			data['description'] = row[2]
+			data['date_created'] = row[3]
+			data['pickup_location'] = row[4]
+			data['present_location'] = row[5]
+			data['destination'] = row[6]
+			data['price'] = row[7]
+			data['status'] = row[8]
+			data_list.append(data)
+			db.connection.close()
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
 	else:
 		return jsonify({'message':'no parcels', 'status':'failure'}), 400
 	
@@ -46,8 +59,21 @@ def get_parcel(parcel_id):
 	db.connection.commit()
 	result = db.cur.fetchall()	
 	if result:
-		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
+		data_list = []
+		data = dict()
+		for row in result:
+			data['parcel_id'] = row[0]
+			data['owner_id'] = row[1]
+			data['description'] = row[2]
+			data['date_created'] = row[3]
+			data['pickup_location'] = row[4]
+			data['present_location'] = row[5]
+			data['destination'] = row[6]
+			data['price'] = row[7]
+			data['status'] = row[8]
+			data_list.append(data)
+			db.connection.close()
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
 	else:
 		db.connection.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
@@ -144,5 +170,12 @@ def create_parcel_order():
 		return jsonify({'message': 'parcel not created', 'status': 'failure'}), 400
 
 
-	
-
+	def get_owner_name(owner_id):
+		query = """SELECT * FROM users WHERE id = %s"""
+		db.cur.execute(query, (owner_id,))
+		result = db.cur.fetchall()
+		for row in result:
+			name = row[1]
+		db.connection.commit()
+		db.connection.close()
+		return name
