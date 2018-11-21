@@ -107,7 +107,7 @@ def create_user():
 		db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
-			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
+			return jsonify({'message': "user created", 'status': 'failure'}), 201
 		else:
 			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
 			db.cur.execute(query, (username, email, password,))
