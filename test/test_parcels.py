@@ -72,9 +72,9 @@ class APITest(unittest.TestCase):
 		"""
 		token = self.get_token()
 		dest = {"destination": "Kampala"}
-		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
-		self.assertEqual(response.status_code, 400)
-		self.assertIn("parcel already delivered or cancelled", str(response.json))
+		response = self.client.post('/api/v1/parcels', json=parcel, headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 201)
+		self.assertIn("parcel created", str(response.json))
 
 	def test_change_parcel_status(self):
 		"""
