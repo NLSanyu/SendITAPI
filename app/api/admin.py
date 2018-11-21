@@ -8,10 +8,13 @@ query = ""
 db = DatabaseConnection()
 
 @app.route('/api/v1/parcels/<int:parcel_id>/status', methods=['PUT'])
+@jwt_required
 def change_parcel_status(parcel_id):
 	"""
 		Function for API endpoint to change the status a parcel delivery order
 	"""
+	current_user = get_jwt_identity()
+
 	all_status = ["Delivered", "Cancelled", "New", "In Transit", "Not picked up"]
 	req = request.json
 	if 'status' not in req.keys():
@@ -43,10 +46,13 @@ def change_parcel_status(parcel_id):
 
 
 @app.route('/api/v1/parcels/<int:parcel_id>/presentLocation', methods=['PUT'])
+@jwt_required
 def change_parcel_location(parcel_id):
 	"""
 		Function for API endpoint to change the present location of a parcel delivery order
 	"""
+	current_user = get_jwt_identity()
+
 	req = request.json
 	if 'location' in req.keys():
 		location = request.json['location']
