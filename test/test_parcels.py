@@ -35,5 +35,13 @@ class APITest(unittest.TestCase):
 		response = self.client.get('/api/v1/parcels', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
+	def test_get_one_parcel(self):
+		"""
+			Test for fetching one parcel
+		"""
+		token = self.get_token()
+		response = self.client.get('/api/v1/parcels/1', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 200)
+
 if __name__ == '__main__':
     unittest.main()

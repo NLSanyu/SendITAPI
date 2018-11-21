@@ -28,7 +28,7 @@ class APITestUsers(unittest.TestCase):
 		response = self.client.post('/api/v1/auth/signup', json=self.signup_user)
 		token = response.json['access_token']
 		self.assertEqual(response.status_code, 201)
-		#self.assertIn(str(response), "user created")
+		self.assertIn("user signed up", str(response.json))
 
 	def test_login(self):
 		"""
@@ -37,7 +37,7 @@ class APITestUsers(unittest.TestCase):
 		response = self.client.post('/api/v1/auth/login', json=self.login_user)
 		token = response.json['access_token']
 		self.assertEqual(response.status_code, 200)
-		#self.assertIn(str(response), "user created")
+		self.assertIn("user logged in", str(response.json))
 
 	def test_get_users(self):
 		"""
