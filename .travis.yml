@@ -9,14 +9,5 @@ before_script:
   - psql -c 'create database testdb;' -U postgres
 script:
   - pytest test --cov=app --cov-report term-missing
-addons:
-  postgresql: "10"
-  apt:
-    packages:
-    - postgresql-10
-    - postgresql-client-10
-env:
-  global:
-  - PGPORT=5432
 after_success:
   - coveralls
