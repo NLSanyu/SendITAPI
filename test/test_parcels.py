@@ -2,38 +2,15 @@ import unittest
 import os
 import json
 import pytest
-from test.test_users import APITestUsers
+from test.test_base import BaseTest
 from app.models.models import Tables
 from app import app
 
-user = APITestUsers()
 parcel = {"owner": "1", "pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
 admin_user = {"username": "admin", "email": "adm@gmail.com", "password": "admin"}
 
 
-class APITest(unittest.TestCase):
-	def setUp(self):
-		self.app = app
-		self.client = self.app.test_client()
-		self.tables = Tables()
-		self.tables.create_tables()
-
-	def get_token(self):
-		"""
-			Function for getting an access token
-		"""
-		response = self.client.post('/api/v1/auth/login', json=user.login_user)
-		access_token = response.json['access_token']
-		return access_token
-
-	def get_admin_token(self):
-		"""
-			Function for getting an access token
-		"""
-		response = self.client.post('/api/v1/auth/login', json=admin_user)
-		access_token = response.json['access_token']
-		return access_token
-
+class APITest(BaseTest):
 	def test_home(self):
 		"""
 			Test for fetching all parcel delivery orders
@@ -84,7 +61,7 @@ class APITest(unittest.TestCase):
 		dest = {"destination": "Kampala"}
 		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 400)
-		self.assertIn("parcel already delivered or cancelled", str(response.json))
+		self.assertIn("parcel destination changed", str(response.json))
 
 	def test_change_parcel_status(self):
 		"""
@@ -103,8 +80,8 @@ class APITest(unittest.TestCase):
 		token = self.get_admin_token()
 		location = {"location": "Kampala Road"}
 		response = self.client.put('/api/v1/parcels/1/presentLocation', json=location, headers={'Authorization': f'Bearer {token}'})
-		self.assertEqual(response.status_code, 400)
-		self.assertIn("parcel already delivered or cancelled", str(response.json))
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel present location updated", str(response.json))
 
 if __name__ == '__main__':
     unittest.main()
