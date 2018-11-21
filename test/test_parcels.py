@@ -66,16 +66,6 @@ class APITest(unittest.TestCase):
 		self.assertEqual(response.status_code, 400)
 		self.assertIn("parcel non-existent", str(response.json))
 
-	def test_change_parcel_dest(self):
-		"""
-			Test for changing a parcel's destination
-		"""
-		token = self.get_token()
-		dest = {"destination": "Kampala"}
-		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
-		self.assertEqual(response.status_code, 400)
-		self.assertIn("parcel already delivered or cancelled", str(response.json))
-
 	def test_create_parcel(self):
 		"""
 			Test for creating a parcel
@@ -86,12 +76,23 @@ class APITest(unittest.TestCase):
 		self.assertEqual(response.status_code, 201)
 		self.assertIn("parcel created", str(response.json))
 
+	def test_change_parcel_dest(self):
+		"""
+			Test for changing a parcel's destination
+		"""
+		token = self.get_token()
+		dest = {"destination": "Kampala"}
+		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel already delivered or cancelled", str(response.json))
+
 	def test_change_parcel_status(self):
 		"""
 			Test for changing a parcel's status
 		"""
+		status = {"status": "Not picked up"}
 		token = self.get_admin_token()
-		response = self.client.put('/api/v1/parcels/1/status', headers={'Authorization': f'Bearer {token}'})
+		response = self.client.put('/api/v1/parcels/1/status', json=status, headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 400)
 		self.assertIn("parcel already delivered or cancelled", str(response.json))
 
@@ -100,7 +101,7 @@ class APITest(unittest.TestCase):
 			Test for changing a parcel's present location
 		"""
 		token = self.get_admin_token()
-		location = {"destination": "Kampala Road"}
+		location = {"location": "Kampala Road"}
 		response = self.client.put('/api/v1/parcels/1/presentLocation', json=location, headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 400)
 		self.assertIn("parcel already delivered or cancelled", str(response.json))
