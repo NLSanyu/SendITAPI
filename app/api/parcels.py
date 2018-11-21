@@ -135,7 +135,7 @@ def create_parcel_order():
 		db.connect()
 		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
 		db.connection.commit()
-		return jsonify({'message': 'parcel created', 'status': 'success'}), 200
+		return jsonify({'message': 'parcel created', 'status': 'success'}), 201
 	else:
 		return jsonify({'message': 'parcel not created', 'status': 'failure'}), 400
 
