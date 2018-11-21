@@ -14,9 +14,6 @@ class APITestUsers(unittest.TestCase):
 		self.app = app
 		self.client = self.app.test_client()
 
-	def tearDown():
-		
-
 	def get_token(self):
 		"""
 			Function for getting an access token
@@ -31,8 +28,8 @@ class APITestUsers(unittest.TestCase):
 		"""
 		response = self.client.post('/api/v1/auth/signup', json=self.signup_user)
 		#token = response.json['access_token']
-		self.assertEqual(response.status_code, 201)
-		self.assertIn("user signed up", str(response.json))
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("user already exists", str(response.json))
 
 	def test_login(self):
 		"""
