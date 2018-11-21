@@ -3,7 +3,20 @@ python:
   - "3.6.5"
 install:
   - pip install -r requirements.txt
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
 script:
   - pytest test --cov=app --cov-report term-missing
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
+env:
+  global:
+  - PGPORT=5433
 after_success:
   - coveralls
