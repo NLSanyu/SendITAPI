@@ -101,9 +101,9 @@ def create_user():
 	#password_hash = generate_password_hash(password)
 
 	if validate_user_info(username, email, password, True):
-		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
+		query = """SELECT * FROM users WHERE username = %s AND email = %s;"""
 		db.connect()
-		db.cur.execute(query, (username, password,))
+		db.cur.execute(query, (username, email,))
 		db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
