@@ -16,6 +16,9 @@ def change_parcel_status(parcel_id):
 	"""
 	current_user = get_jwt_identity()
 
+	if current_user['username'] != "admin" and current_user['password'] != "admin":
+		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
+
 	all_status = ["Delivered", "Cancelled", "New", "In Transit", "Not picked up"]
 	req = request.json
 	if 'status' not in req.keys():
@@ -53,6 +56,8 @@ def change_parcel_location(parcel_id):
 		Function for API endpoint to change the present location of a parcel delivery order
 	"""
 	current_user = get_jwt_identity()
+	if current_user['username'] != "admin" and current_user['password'] != "admin":
+		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 	req = request.json
 	if 'location' in req.keys():

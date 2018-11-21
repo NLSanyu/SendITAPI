@@ -79,7 +79,7 @@ def login_user():
 		if result != None:
 			db.cur.close()
 			db.connection.close()
-			access_token = create_access_token(identity = username)
+			access_token = create_access_token(identity = req)
 			return jsonify({'message': 'user logged in', 'status': 'success', 'access_token': access_token}), 200
 		else:
 			return jsonify({'message': 'user log in failed', 'status': 'failure'})
@@ -114,7 +114,7 @@ def create_user():
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()
-			access_token = create_access_token(identity = username)
+			access_token = create_access_token(identity = req)
 			return jsonify({'message': 'user signed up', 'status': 'success', 'access_token': access_token}), 201
 	else:
 		return jsonify({'message': "user not created", 'status': 'failure'}), 400
