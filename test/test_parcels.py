@@ -12,8 +12,8 @@ class APITest(unittest.TestCase):
 	def setUp(self):
 		self.app = app
 		self.client = self.app.test_client()
-		tables = Tables()
-		tables.create_tables()
+		self.tables = Tables()
+		self.tables.create_tables()
 
 	def get_token(self):
 		"""

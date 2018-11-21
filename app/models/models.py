@@ -1,3 +1,4 @@
+import os
 import psycopg2
 from flask import jsonify
 
@@ -9,6 +10,8 @@ class DatabaseConnection():
     
     def connect(self):
         try:
+            if(os.getenv("FLASK_ENV")) == "Production":
+                self.connection = psycopg2.connect(os.getenv("DATABASE_URL"))
             self.connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
@@ -42,19 +45,6 @@ class Tables():
             price VARCHAR(255) NOT NULL,
             status VARCHAR(255) NOT NULL
         )
-        """,
-        """
-        CREATE TABLE IF NOT EXISTS user_parcels (
-            user_id INTEGER NOT NULL,
-            parcel_id INTEGER NOT NULL,
-            PRIMARY KEY (user_id , parcel_id),
-            FOREIGN KEY (user_id)
-                REFERENCES users (id)
-                ON UPDATE CASCADE ON DELETE CASCADE,
-            FOREIGN KEY (parcel_id)
-                REFERENCES parcels (id)
-                ON UPDATE CASCADE ON DELETE CASCADE
-        )
         """
         )
 
@@ -73,6 +63,28 @@ class Tables():
 
 
    
+    def drop_tables(self):
+        commands = (
+        """
+            DROP TABLE IF EXISTS users
+        """,
+        """
+            DROP TABLE IF EXISTS parcels
+        """
+        )
+
+        try:
+            connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
+            cur = connection.cursor()
+            for command in commands:
+                cur.execute(command)
+            cur.close()
+            connection.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            cur.close()
+            connection.close()
 
 
   
