@@ -8,6 +8,8 @@ from app import app
 
 user = APITestUsers()
 parcel = {"owner": "1", "pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
+admin_user = {"username": "admin", "email": "adm@gmail.com", "password": "admin"}
+
 
 class APITest(unittest.TestCase):
 	def setUp(self):
@@ -21,6 +23,14 @@ class APITest(unittest.TestCase):
 			Function for getting an access token
 		"""
 		response = self.client.post('/api/v1/auth/login', json=user.login_user)
+		access_token = response.json['access_token']
+		return access_token
+
+	def get_admin_token(self):
+		"""
+			Function for getting an access token
+		"""
+		response = self.client.post('/api/v1/auth/login', json=admin_user)
 		access_token = response.json['access_token']
 		return access_token
 
@@ -80,7 +90,7 @@ class APITest(unittest.TestCase):
 		"""
 			Test for changing a parcel's status
 		"""
-		token = self.get_token()
+		token = self.get_admin_token()
 		response = self.client.put('/api/v1/parcels/1/status', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 400)
 		self.assertIn("parcel already delivered or cancelled", str(response.json))
@@ -89,7 +99,7 @@ class APITest(unittest.TestCase):
 		"""
 			Test for changing a parcel's present location
 		"""
-		token = self.get_token()
+		token = self.get_admin_token()
 		location = {"destination": "Kampala Road"}
 		response = self.client.put('/api/v1/parcels/1/presentLocation', json=location, headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 400)

@@ -8,7 +8,6 @@ class APITestUsers(unittest.TestCase):
 
 	login_user = {"username": "sanyu", "password": "pass123456"}
 	signup_user = {"username": "sanyu", "email": "sanyu@gmail.com", "password": "pass123"}
-	other_user = {"username": "lns", "email": "lns@gmail.com", "password": "pass123"}
 
 	def setUp(self):
 		self.app = app
@@ -53,7 +52,7 @@ class APITestUsers(unittest.TestCase):
 			Test for fetching all parcels of a specific user
 		"""
 		token = self.get_token()
-		response = self.client.get('/api/v1/users/2/parcels', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
+		response = self.client.get('/api/v1/users/1/parcels', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
