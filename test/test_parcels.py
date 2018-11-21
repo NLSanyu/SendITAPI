@@ -7,6 +7,7 @@ from app.models.models import Tables
 from app import app
 
 user = APITestUsers()
+parcel = {"owner": "1", "pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
 
 class APITest(unittest.TestCase):
 	def setUp(self):
@@ -62,6 +63,35 @@ class APITest(unittest.TestCase):
 		token = self.get_token()
 		dest = {"destination": "Kampala"}
 		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel already delivered or cancelled", str(response.json))
+
+	def test_create_parcel(self):
+		"""
+			Test for creating a parcel
+		"""
+		token = self.get_token()
+		dest = {"destination": "Kampala"}
+		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel already delivered or cancelled", str(response.json))
+
+	def test_change_parcel_status(self):
+		"""
+			Test for changing a parcel's status
+		"""
+		token = self.get_token()
+		response = self.client.put('/api/v1/parcels/1/status', headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel already delivered or cancelled", str(response.json))
+
+	def test_change_parcel_present_location(self):
+		"""
+			Test for changing a parcel's present location
+		"""
+		token = self.get_token()
+		location = {"destination": "Kampala Road"}
+		response = self.client.put('/api/v1/parcels/1/presentLocation', json=location, headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 400)
 		self.assertIn("parcel already delivered or cancelled", str(response.json))
 
