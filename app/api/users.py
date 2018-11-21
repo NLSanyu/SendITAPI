@@ -101,14 +101,21 @@ def create_user():
 	#password_hash = generate_password_hash(password)
 
 	if validate_user_info(username, email, password, True):
-		query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
+		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
 		db.connect()
-		db.cur.execute(query, (username, email, password,))
+		db.cur.execute(query, (username, password,))
 		db.connection.commit()
-		db.cur.close()
-		db.connection.close()
-		access_token = create_access_token(identity = username)
-		return jsonify({'message': 'user signed up', 'status': 'success', 'access_token': access_token}), 201
+		result = db.cur.fetchall()
+		if result:
+			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
+		else:
+			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
+			db.cur.execute(query, (username, email, password,))
+			db.connection.commit()
+			db.cur.close()
+			db.connection.close()
+			access_token = create_access_token(identity = username)
+			return jsonify({'message': 'user signed up', 'status': 'success', 'access_token': access_token}), 201
 	else:
 		return jsonify({'message': "user not created", 'status': 'failure'}), 400
 

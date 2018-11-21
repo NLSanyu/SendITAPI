@@ -5,7 +5,7 @@ from app.models.models import DatabaseConnection
 from app import app
 
 query = ""
-db = None
+db = DatabaseConnection()
 
 @app.route('/api/v1/parcels/<int:parcel_id>/status', methods=['PUT'])
 def change_parcel_status(parcel_id):
@@ -19,9 +19,9 @@ def change_parcel_status(parcel_id):
 
 	status = request.json['status']
 	if status in all_status:
-		query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
+		query = """SELECT * FROM parcels WHERE id = %s;"""
 		db.connect()
-		db.cur.execute(query, (parcel_id, status,))
+		db.cur.execute(query, (parcel_id,))
 		db.connection.commit()
 		result = db.cur.fetchall()
 		if result != None:
