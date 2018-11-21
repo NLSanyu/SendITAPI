@@ -16,6 +16,9 @@ def get_all_parcels():
 	"""
 	current_user = get_jwt_identity()
 
+	if current_user['username'] != "admin" and current_user['password'] != "admin":
+		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
+
 	query = """SELECT * FROM parcels;"""
 	db.connect()
 	db.cur.execute(query)
@@ -35,13 +38,14 @@ def get_parcel(parcel_id):
 		Function for API endpoint to fetch a specific parcel delivery order
 	"""
 	current_user = get_jwt_identity()
+
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	
 	db.connect()
 	db.cur.execute(query, (parcel_id,))
 	db.connection.commit()
 	result = db.cur.fetchall()	
-	if result != None:
+	if result:
 		db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
 	else:
@@ -126,12 +130,12 @@ def create_parcel_order():
 	price = ' '
 	status = 'New'
 
-	owner = request.json['owner'] 
+	owner = request.json['owner_id'] 
 	pickup_location = request.json['pickup_location'] 
 	destination = request.json['destination']  
 	description = request.json['description'] 
 	if validate_parcel_info(owner, description, pickup_location, destination):
-		query = """INSERT INTO parcels (owner, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 		db.connect()
 		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
 		db.connection.commit()

@@ -45,7 +45,7 @@ def get_user_parcel(user_id):
 	"""
 	current_user = get_jwt_identity()
 
-	query = """SELECT * FROM parcels WHERE owner = %s;"""
+	query = """SELECT * FROM parcels WHERE owner_id = %s;"""
 	db.connect()
 	db.cur.execute(query, (user_id,))
 	db.connection.commit()
@@ -77,13 +77,15 @@ def login_user():
 		db.connection.commit()
 		result = db.cur.fetchall()
 		if result != None:
+			#for row in result:
+				#req['id'] = row[1]
+			access_token = create_access_token(identity = req)
 			db.cur.close()
 			db.connection.close()
-			access_token = create_access_token(identity = req)
-			return jsonify({'message': 'user logged in', 'status': 'success', 'access_token': access_token}), 200
+			return jsonify({'message': 'user logged in', 'status': 'success', 'data': result, 'access_token': access_token}), 200
 		else:
-			return jsonify({'message': 'user log in failed', 'status': 'failure'})
-
+			return jsonify({'message': 'user log in failed', 'status': 'failure'}), 400
+	
 
 @app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
@@ -107,16 +109,17 @@ def create_user():
 		db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
-			return jsonify({'message': "user signed up", 'status': 'failure'}), 201
+			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
-			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
+			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id"""
 			db.cur.execute(query, (username, email, password,))
+			req['id'] = db.cur.fetchone()
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()
 			access_token = create_access_token(identity = req)
 			return jsonify({'message': 'user signed up', 'status': 'success', 'access_token': access_token}), 201
 	else:
-		return jsonify({'message': "user not created", 'status': 'failure'}), 400
+		return jsonify({'message': "user not created because of invalid info", 'status': 'failure'}), 400
 
 

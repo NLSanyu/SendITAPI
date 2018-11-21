@@ -36,7 +36,7 @@ class Tables():
         """
         CREATE TABLE IF NOT EXISTS parcels (
             id SERIAL PRIMARY KEY,
-            owner INTEGER NOT NULL,
+            owner_id INTEGER NOT NULL,
             description VARCHAR(255) NOT NULL,
             date_created VARCHAR(255) NOT NULL,
             pickup_location VARCHAR(255) NOT NULL,
