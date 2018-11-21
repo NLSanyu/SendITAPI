@@ -2,7 +2,6 @@ import unittest
 import os
 import json
 import pytest
-from test.base import BaseTestCase
 from app import app
 
 class APITest(unittest.TestCase):
