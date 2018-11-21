@@ -20,7 +20,7 @@ def change_parcel_status(parcel_id):
 	status = request.json['status']
 	if status in all_status:
 		query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
-		connect_to_db()
+		db.connect()
 		db.cur.execute(query, (parcel_id, status,))
 		db.connection.commit()
 		result = db.cur.fetchall()
@@ -57,7 +57,7 @@ def change_parcel_location(parcel_id):
 				return jsonify({'message':'present location should not be longer than 124 characters', 'status':'failure'}), 400
 
 		query = """SELECT * FROM parcels WHERE id = %s;"""
-		connect_to_db()
+		db.connect()
 		
 		db.cur.execute(query, (parcel_id,))
 		db.connection.commit()
