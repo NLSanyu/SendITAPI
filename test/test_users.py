@@ -2,38 +2,57 @@ import unittest
 import os
 import json
 import pytest
-from test.base import BaseTestCase
 from app import app
 
-new_parcel = {
-	'id': 4,
-	'owner': 2,
-	'description': 'Green box',
-	'date_created': '4-11-2018',
-	'pickup_location': 'Plot 11 Colville Street',
-	'present_location': 'Shop no.25 Oasis Mall',
-	'destination': 'Shop no.25 Oasis Mall',
-	'price': 'shs 3,000',
-	'status': 'Not picked up'
-}
+class APITestUsers(unittest.TestCase):
 
-class APITestUsers(BaseTestCase):
+	login_user = {"username": "lydia", "password": "pass123"}
+	signup_user = user = {"username": "lydia", "email": "lydia@gmail.com", "password": "pass123"}
+
 	def setUp(self):
-		self.app = super().create_app()
+		self.app = app
 		self.client = self.app.test_client()
 
-	def test_fetch_users(self):
+	def get_token(self):
+		"""
+			Function for getting an access token
+		"""
+		response = self.client.post('/api/v1/auth/login', json=self.login_user)
+		access_token = response.json['access_token']
+		return access_token
+
+	def test_signup(self):
+		"""
+			Test for signing a user up
+		"""
+		response = self.client.post('/api/v1/auth/signup', json=self.signup_user)
+		token = response.json['access_token']
+		self.assertEqual(response.status_code, 201)
+		self.assertIn("user signed up", str(response.json))
+
+	def test_login(self):
+		"""
+			Test for logging a user in
+		"""
+		response = self.client.post('/api/v1/auth/login', json=self.login_user)
+		token = response.json['access_token']
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("user logged in", str(response.json))
+
+	def test_get_users(self):
 		"""
 			Test for fetching all users
 		"""
-		response = self.client.get('/api/v1/users', content_type='application/json')
+		token = self.get_token()
+		response = self.client.get('/api/v1/users', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
-	def test_fetch_user_parcels(self):
+	def test_get_user_parcels(self):
 		"""
 			Test for fetching all parcels of a specific user
 		"""
-		response = self.client.get('/api/v1/users/2/parcels', content_type='application/json')
+		token = self.get_token()
+		response = self.client.get('/api/v1/users/2/parcels', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':

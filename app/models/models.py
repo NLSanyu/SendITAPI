@@ -4,13 +4,18 @@ from flask import jsonify
 class DatabaseConnection():
 
     def __init__(self):
+        self.connection = None
+        self.cur = None
+    
+    def connect(self):
         try:
             self.connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
             self.cur.close()
             self.connection.close()
-            return jsonify({'message': 'database error', 'error': str(error), 'status': 'failure'}), 500
+
+class Tables():
 
     def create_tables(self):
         commands = (
@@ -54,14 +59,17 @@ class DatabaseConnection():
         )
 
         try:
+            connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
+            cur = connection.cursor()
             for command in commands:
-                self.cur.execute(command)
-            self.cur.close()
-            self.connection.commit()
+                cur.execute(command)
+            cur.close()
+            connection.commit()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
         finally:
-            self.connection.close()
+            cur.close()
+            connection.close()
 
 
    

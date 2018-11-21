@@ -2,66 +2,64 @@ import unittest
 import os
 import json
 import pytest
-from test.base import BaseTestCase
+from test.test_users import APITestUsers
 from app import app
 
-new_parcel = {
-	'id': 4,
-	'owner': 2,
-	'description': 'Green box',
-	'date_created': '4-11-2018',
-	'pickup_location': 'Plot 11 Colville Street',
-	'present_location': 'Shop no.25 Oasis Mall',
-	'destination': 'Shop no.25 Oasis Mall',
-	'price': 'shs 3,000',
-	'status': 'Not picked up'
-}
+user = APITestUsers()
 
-class APITest(BaseTestCase):
+class APITest(unittest.TestCase):
 	def setUp(self):
-		self.app = super().create_app()
+		self.app = app
 		self.client = self.app.test_client()
-		self.new_parcel = {
-			'id': 4,
-			'owner': 2,
-			'description': 'Green box',
-			'date_created': '4-11-2018',
-			'pickup_location': 'Plot 11 Colville Street',
-			'present_location': 'Shop no.25 Oasis Mall',
-			'destination': 'Shop no.25 Oasis Mall',
-			'price': 'shs 3,000',
-			'status': 'New'
-		}
 
-	def test_fetch_parcels(self):
+	def get_token(self):
+		"""
+			Function for getting an access token
+		"""
+		response = self.client.post('/api/v1/auth/login', json=user.login_user)
+		access_token = response.json['access_token']
+		return access_token
+
+	def test_home(self):
 		"""
 			Test for fetching all parcel delivery orders
 		"""
-		response = self.client.get('/api/v1/parcels', content_type='application/json')
+		response = self.client.get('/api/v1')
 		self.assertEqual(response.status_code, 200)
 
-	def test_fetch_a_parcel(self):
+	def test_get_parcels(self):
 		"""
-			Test for fetching a parcel delivery order
+			Test for fetching all parcels
 		"""
-		response = self.client.get('/api/v1/parcels/3', content_type='application/json')
+		token = self.get_token()
+		response = self.client.get('/api/v1/parcels', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
-	def test_create_parcel(self):
+	def test_get_one_parcel(self):
 		"""
-			Test for creating a parcel delivery order
+			Test for fetching one parcel
 		"""
-		response = self.client.post('/api/v1/parcels', json=new_parcel)
-		self.assertEqual(response.status_code, 201)
+		token = self.get_token()
+		response = self.client.get('/api/v1/parcels/1', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 200)
 
 	def test_cancel_parcel(self):
 		"""
-			Test for cancelling a parcel delivery order
+			Test for cancelling a parcel
 		"""
-		response = self.client.put('/api/v1/parcels/2/cancel', content_type='application/json')
-		self.assertEqual(response.status_code, 200)
-		self.assertIn('Cancelled', str(response.data))
+		token = self.get_token()
+		response = self.client.put('/api/v1/parcels/1/cancel', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel non-existent", str(response.json))
 
+	def test_change_parcel_dest(self):
+		"""
+			Test for changing a parcel's destination
+		"""
+		token = self.get_token()
+		response = self.client.put('/api/v1/parcels/1/destination', content_type='application/json', json={"destination": "Kampala"}, headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel already delivered or cancelled", str(response.json))
 
 if __name__ == '__main__':
     unittest.main()

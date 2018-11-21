@@ -14,32 +14,33 @@ def change_parcel_status(parcel_id):
 	"""
 	all_status = ["Delivered", "Cancel", "New", "In Transit", "Not picked up"]
 	req = request.json
-	if 'status' in req.keys():
-		status = request.json['status']
-		if status in all_status:
-			query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
-			connect_to_db()
-			db.cur.execute(query, (parcel_id, status,))
-			db.connection.commit()
-			result = db.cur.fetchall()
-			if result != None:
-				for row in db.cur:
-					if row[8] == "Delivered":
-						return jsonify({'message':'parcel already delivered', 'status':'failure'}), 400
-					else:
-						query = """UPDATE parcels SET status = %s WHERE id = %s"""
-						db.cur.execute(query, (status, parcel_id, ))
-						db.cur.close()
-						db.connection.close()
-						return jsonify({'message':'parcel status updated', 'status':'success'}), 400	
-			else: 	
-				db.cur.close()
-				db.connection.close()
-				return jsonify({'message':'parcel non-existent', 'status':'failure'}), 400
-		else:
-			return jsonify({'message':'incorrect status', 'status':'failure'}), 400	
-	else:
+	if 'status' not in req.keys():
 		return jsonify({'message':'no status entered', 'status':'failure'}), 400
+
+	status = request.json['status']
+	if status in all_status:
+		query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
+		connect_to_db()
+		db.cur.execute(query, (parcel_id, status,))
+		db.connection.commit()
+		result = db.cur.fetchall()
+		if result != None:
+			for row in db.cur:
+				if row[8] == "Delivered":
+					return jsonify({'message':'parcel already delivered', 'status':'failure'}), 400
+				else:
+					query = """UPDATE parcels SET status = %s WHERE id = %s"""
+					db.cur.execute(query, (status, parcel_id, ))
+					db.cur.close()
+					db.connection.close()
+					return jsonify({'message':'parcel status updated', 'status':'success'}), 400	
+		else: 	
+			db.cur.close()
+			db.connection.close()
+			return jsonify({'message':'parcel non-existent', 'status':'failure'}), 400
+	else:
+		return jsonify({'message':'incorrect status', 'status':'failure'}), 400	
+
 
 @app.route('/api/v1/parcels/<int:parcel_id>/presentLocation', methods=['PUT'])
 def change_parcel_location(parcel_id):
