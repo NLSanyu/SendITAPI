@@ -30,10 +30,10 @@ def change_parcel_status(parcel_id):
 					return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 				else:
 					query = """UPDATE parcels SET status = %s WHERE id = %s"""
-					db.cur.execute(query, (status, parcel_id, ))
+					db.cur.execute(query, (status, parcel_id,))
 					db.cur.close()
 					db.connection.close()
-					return jsonify({'message': 'parcel status updated', 'status' :'success'}), 400	
+					return jsonify({'message': 'parcel status updated', 'status' :'success'}), 200	
 		else: 	
 			db.cur.close()
 			db.connection.close()
@@ -68,14 +68,9 @@ def change_parcel_location(parcel_id):
 					return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 				else:
 					query = """UPDATE parcels SET present_location = %s WHERE id = %s"""
-					db.cur.execute(query, (location, parcel_id, ))	
-					return jsonify({'message':'parcel present location updated', 'status':'success'}), 400
+					db.cur.execute(query, (location, parcel_id,))	
+					return jsonify({'message':'parcel present location updated', 'status':'success'}), 200
 		else: 
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400	
 	else:
 		return jsonify({'message': 'no location entered', 'status': 'failure'}), 400	
-
-
-def connect_to_db():
-	global db
-	db = DatabaseConnection()
