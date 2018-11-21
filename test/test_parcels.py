@@ -43,5 +43,23 @@ class APITest(unittest.TestCase):
 		response = self.client.get('/api/v1/parcels/1', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
+	def test_cancel_parcel(self):
+		"""
+			Test for cancelling a parcel
+		"""
+		token = self.get_token()
+		response = self.client.put('/api/v1/parcels/1/cancel', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel non-existent", str(response.json))
+
+	def test_change_parcel_dest(self):
+		"""
+			Test for changing a parcel's destination
+		"""
+		token = self.get_token()
+		response = self.client.put('/api/v1/parcels/1/destination', content_type='application/json', json={"destination": "Kampala"}, headers={'Authorization': f'Bearer {token}'})
+		self.assertEqual(response.status_code, 400)
+		self.assertIn("parcel already delivered or cancelled", str(response.json))
+
 if __name__ == '__main__':
     unittest.main()

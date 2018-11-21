@@ -73,7 +73,7 @@ def cancel_order(parcel_id):
 				return jsonify({'message': 'parcel updated', 'status': 'success'}), 200			
 		else: 
 			db.connection.close()
-			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
+			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
 		
 
 @app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
