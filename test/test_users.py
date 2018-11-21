@@ -7,7 +7,7 @@ from app import app
 class APITestUsers(unittest.TestCase):
 
 	login_user = {"username": "sanyu", "password": "pass123456"}
-	signup_user = {"username": "sanyuln", "email": "sanyuln@gmail.com", "password": "pass123"}
+	signup_user = {"username": "sanyu", "email": "sanyu@gmail.com", "password": "pass123"}
 	other_user = {"username": "lns", "email": "lns@gmail.com", "password": "pass123"}
 
 	def setUp(self):
@@ -26,7 +26,7 @@ class APITestUsers(unittest.TestCase):
 		"""
 			Test for signing a user up
 		"""
-		response = self.client.post('/api/v1/auth/signup', json=self.other_user)
+		response = self.client.post('/api/v1/auth/signup', json=self.signup_user)
 		#token = response.json['access_token']
 		self.assertEqual(response.status_code, 400)
 		self.assertIn("user already exists", str(response.json))

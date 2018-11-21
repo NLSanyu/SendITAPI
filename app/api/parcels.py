@@ -112,7 +112,7 @@ def change_parcel_destination(parcel_id):
 
 @app.route('/api/v1/parcels', methods=['POST'])
 @jwt_required
-def create_order():
+def create_parcel_order():
 	"""
 		Function for API endpoint to create a parcel delivery order
 	"""
