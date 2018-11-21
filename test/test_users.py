@@ -44,7 +44,7 @@ class APITestUsers(unittest.TestCase):
 			Test for fetching all users
 		"""
 		token = self.get_token()
-		response = self.client.get('/api/v1/users', content_type='application/json', authorization=token)
+		response = self.client.get('/api/v1/users', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
 	def test_get_user_parcels(self):
@@ -52,7 +52,7 @@ class APITestUsers(unittest.TestCase):
 			Test for fetching all parcels of a specific user
 		"""
 		token = self.get_token()
-		response = self.client.get('/api/v1/users/2/parcels', content_type='application/json', authorization=token)
+		response = self.client.get('/api/v1/users/2/parcels', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
 		self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
