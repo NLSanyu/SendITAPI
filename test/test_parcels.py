@@ -37,7 +37,7 @@ class APITest(BaseTest):
 		"""
 		self.client.post('/api/v1/auth/signup', data=json.dumps(signup_user), content_type='application/json')
 		token = self.get_admin_token()
-		response = self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
+		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		response = self.client.get('/api/v1/parcels', content_type='application/json', headers={'Authorization': token})
 		self.assertEqual(response.status_code, 200)
 
@@ -47,28 +47,32 @@ class APITest(BaseTest):
 		"""
 		self.client.post('/api/v1/auth/signup', data=json.dumps(signup_user), content_type='application/json')
 		token = self.get_token()
-		response = self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
+		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		response = self.client.get('/api/v1/parcels/1', content_type='application/json', headers={'Authorization': token})
 		self.assertEqual(response.status_code, 200)
 
-	# def test_cancel_parcel(self):
-	# 	"""
-	# 		Test for cancelling a parcel
-	# 	"""
-	# 	token = self.get_token()
-	# 	response = self.client.put('/api/v1/parcels/1/cancel', content_type='application/json', headers={'Authorization': f'Bearer {token}'})
-	# 	self.assertEqual(response.status_code, 400)
-	# 	self.assertIn("parcel non-existent", str(response.json))
+	def test_cancel_parcel(self):
+		"""
+			Test for cancelling a parcel
+		"""
+		self.client.post('/api/v1/auth/signup', data=json.dumps(signup_user), content_type='application/json')
+		token = self.get_token()
+		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
+		response = self.client.put('/api/v1/parcels/1/cancel', content_type='application/json', headers={'Authorization': token})
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel cancelled", str(response.json))
 
-	# def test_change_parcel_dest(self):
-	# 	"""
-	# 		Test for changing a parcel's destination
-	# 	"""
-	# 	token = self.get_token()
-	# 	dest = {"destination": "Kampala"}
-	# 	response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': f'Bearer {token}'})
-	# 	self.assertEqual(response.status_code, 400)
-	# 	self.assertIn("parcel destination changed", str(response.json))
+	def test_change_parcel_dest(self):
+		"""
+			Test for changing a parcel's destination
+		"""
+		self.client.post('/api/v1/auth/signup', data=json.dumps(signup_user), content_type='application/json')
+		token = self.get_token()
+		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
+		dest = {"destination": "Kampala"}
+		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': token})
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel destination changed", str(response.json))
 
 	# def test_change_parcel_status(self):
 	# 	"""
