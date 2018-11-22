@@ -89,9 +89,9 @@ def cancel_order(parcel_id):
 	"""
 	current_user = get_jwt_identity()
 	
-	query = """SELECT * FROM parcels WHERE id = %s AND status != %s;"""
+	query = """SELECT * FROM parcels WHERE id = %s;"""
 	db.connect()
-	db.cur.execute(query, (parcel_id, 'Cancelled',))
+	db.cur.execute(query, (parcel_id,))
 	result = db.cur.fetchall()
 	if result:
 		for row in result:
@@ -99,7 +99,8 @@ def cancel_order(parcel_id):
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET status = %s WHERE id = %s"""
-				db.cur.execute(query, ('Cancelled', parcel_id,))
+				status = "Cancelled"
+				db.cur.execute(query, (status, parcel_id,))
 				db.connection.commit()
 				db.connection.close()
 				return jsonify({'message': 'parcel updated', 'status': 'success'}), 200			
