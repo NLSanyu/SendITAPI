@@ -175,12 +175,12 @@ def create_parcel_order():
 		return jsonify({'message': 'parcel not created', 'status': 'failure'}), 400
 
 
-	def get_owner_name(owner_id):
-		query = """SELECT * FROM users WHERE id = %s"""
-		db.cur.execute(query, (owner_id,))
-		result = db.cur.fetchall()
-		for row in result:
-			name = row[1]
-		db.connection.commit()
-		db.connection.close()
-		return name
+def get_owner_name(owner_id):
+	query = """SELECT * FROM users WHERE id = %s"""
+	db.cur.execute(query, (owner_id,))
+	result = db.cur.fetchall()
+	for row in result:
+		name = row[1]
+	db.connection.commit()
+	db.connection.close()
+	return name
