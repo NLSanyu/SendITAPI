@@ -2,23 +2,7 @@ import os
 import psycopg2
 from flask import jsonify
 
-class DatabaseConnection():
-
-    def __init__(self):
-        self.connection = None
-        self.cur = None
-    
-    def connect(self):
-        try:
-            if(os.getenv("FLASK_ENV")) == "Production":
-                self.connection = psycopg2.connect(os.getenv("DATABASE_URL"))
-            self.connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
-            self.cur = self.connection.cursor()
-        except (Exception, psycopg2.DatabaseError) as error:
-            self.cur.close()
-            self.connection.close()
-
-class Tables():
+class TestTables():
 
     def create_tables(self):
         commands = (
@@ -36,7 +20,7 @@ class Tables():
         """
         CREATE TABLE IF NOT EXISTS parcels (
             id SERIAL PRIMARY KEY,
-            owner_id INTEGER NOT NULL,
+            owner INTEGER NOT NULL,
             description VARCHAR(255) NOT NULL,
             date_created VARCHAR(255) NOT NULL,
             pickup_location VARCHAR(255) NOT NULL,
@@ -49,7 +33,7 @@ class Tables():
         )
 
         try:
-            connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
+            connection = psycopg2.connect(database="testingdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
             cur = connection.cursor()
             for command in commands:
                 cur.execute(command)
@@ -74,7 +58,7 @@ class Tables():
         )
 
         try:
-            connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
+            connection = psycopg2.connect(database="testingdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
             cur = connection.cursor()
             for command in commands:
                 cur.execute(command)
@@ -85,10 +69,3 @@ class Tables():
         finally:
             cur.close()
             connection.close()
-
-
-  
-    
-    
-    
-        
