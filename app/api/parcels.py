@@ -117,19 +117,21 @@ def change_parcel_destination(parcel_id):
 	"""
 	current_user = get_jwt_identity()
 
-	dest = request.json['destination']
-	if dest == "": 
-		return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
-	else:
-		if len(dest) > 124:
-			return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400
+	req = request.json
+	if 'destination' in req.keys():
+		dest = request.json['destination']
+		if dest == "": 
+			return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
+		else:
+			if len(dest) > 124:
+				return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	db.connect()
 	db.cur.execute(query, (parcel_id,))
 	db.connection.commit()
 	result = db.cur.fetchall()
-	if result != None:
+	if result:
 		for row in result:
 			if (row[8] == "Delivered" or row[8] == "Cancelled"):
 				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
