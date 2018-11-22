@@ -71,18 +71,18 @@ def login_user():
 
 	if validate_user_info(username, email, password, False):
 		password = generate_password_hash(password)
-		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
+		query = """SELECT * FROM users WHERE username = %s;"""
 		db.connect()
-		db.cur.execute(query, (username, password,))
+		db.cur.execute(query, (username,))
 		db.connection.commit()
 		result = db.cur.fetchall()
-		if result != None:
-			#for row in result:
-				#req['id'] = row[1]
+		if result:
+			for row in result:
+				req['id'] = row[0]
 			access_token = create_access_token(identity = req)
 			db.cur.close()
 			db.connection.close()
-			return jsonify({'message': 'user logged in', 'status': 'success', 'data': result, 'access_token': access_token}), 200
+			return jsonify({'message': 'user logged in', 'status': 'success', 'access_token': access_token}), 200
 		else:
 			return jsonify({'message': 'user log in failed', 'status': 'failure'}), 400
 	
@@ -111,14 +111,12 @@ def create_user():
 		if result:
 			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
-			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id"""
+			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
 			db.cur.execute(query, (username, email, password,))
-			req['id'] = db.cur.fetchone()
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()
-			access_token = create_access_token(identity = req)
-			return jsonify({'message': 'user signed up', 'status': 'success', 'access_token': access_token}), 201
+			return jsonify({'message': 'user signed up', 'status': 'success'}), 201
 	else:
 		return jsonify({'message': "user not created because of invalid info", 'status': 'failure'}), 400
 

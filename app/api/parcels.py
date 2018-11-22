@@ -73,6 +73,8 @@ def get_parcel(parcel_id):
 			data['status'] = row[8]
 			data_list.append(data)
 			db.connection.close()
+		if current_user['id'] != data['owner_id']:
+			return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
 	else:
 		db.connection.close()
@@ -91,7 +93,7 @@ def cancel_order(parcel_id):
 	db.connect()
 	db.cur.execute(query, (parcel_id, 'Cancelled',))
 	result = db.cur.fetchall()
-	if result != None:
+	if result:
 		for row in result:
 			if row[8] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
