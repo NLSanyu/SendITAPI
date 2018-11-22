@@ -33,13 +33,13 @@ def get_all_users():
 		db.connection.close()
 		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': result}), 200
 	else:
-		return jsonify({'message':'no users', 'status':'failure'}), 400
+		return jsonify({'message':'no users signed up yet', 'status':'failure'}), 200
 	
 			
 	
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
 @jwt_required
-def get_user_parcel(user_id):
+def get_user_parcels(user_id):
 	"""
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
 	"""
@@ -50,9 +50,22 @@ def get_user_parcel(user_id):
 	db.cur.execute(query, (user_id,))
 	db.connection.commit()
 	result = db.cur.fetchall()
-	if result != None:
+	if result:
+		data_list = []
+		data = dict()
+		for row in result:
+			data['parcel_id'] = row[0]
+			data['owner_id'] = row[1]
+			data['description'] = row[2]
+			data['date_created'] = row[3]
+			data['pickup_location'] = row[4]
+			data['present_location'] = row[5]
+			data['destination'] = row[6]
+			data['price'] = row[7]
+			data['status'] = row[8]
+			data_list.append(data)
 		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': result}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
 	
@@ -82,7 +95,7 @@ def login_user():
 			access_token = create_access_token(identity = req)
 			db.cur.close()
 			db.connection.close()
-			return jsonify({'message': 'user logged in', 'status': 'success', 'access_token': access_token}), 200
+			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token}), 200
 		else:
 			return jsonify({'message': 'user log in failed', 'status': 'failure'}), 400
 	
@@ -116,7 +129,7 @@ def create_user():
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()
-			return jsonify({'message': 'user signed up', 'status': 'success'}), 201
+			return jsonify({'message': 'user signed up successfully', 'status': 'success'}), 201
 	else:
 		return jsonify({'message': "user not created because of invalid info", 'status': 'failure'}), 400
 

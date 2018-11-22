@@ -6,7 +6,7 @@ from test.test_base import BaseTest
 from app.models.models import Tables
 from app import app
 
-parcel = {"owner_id": "1", "pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
+parcel = {"pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
 admin_user = {"username": "admin", "email": "adm@gmail.com", "password": "admin"}
 login_user = {"username": "sanyu", "password": "pass123"}
 signup_user = {"username": "sanyu", "email": "sanyu@gmail.com", "password": "pass123"}

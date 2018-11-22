@@ -41,7 +41,7 @@ def get_all_parcels():
 			db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
 	else:
-		return jsonify({'message':'no parcels', 'status':'failure'}), 400
+		return jsonify({'message':'no parcels created yet', 'status':'success'}), 200
 	
 
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
@@ -108,9 +108,9 @@ def cancel_order(parcel_id):
 				db.connection.commit()
 				db.connection.close()
 				return jsonify({'message': 'parcel cancelled', 'status': 'success'}), 200			
-		else: 
-			db.connection.close()
-			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
+	else: 
+		db.connection.close()
+		return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
 		
 
 @app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
@@ -168,15 +168,15 @@ def create_parcel_order():
 	present_location = request.json['pickup_location']
 	price = ' '
 	status = 'New'
+	owner_id = current_user['id']
 
-	owner = request.json['owner_id'] 
 	pickup_location = request.json['pickup_location'] 
 	destination = request.json['destination']  
 	description = request.json['description'] 
-	if validate_parcel_info(owner, description, pickup_location, destination):
+	if validate_parcel_info(owner_id, description, pickup_location, destination):
 		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 		db.connect()
-		db.cur.execute(query, (owner, description, date_created, pickup_location, present_location, destination, price, status,))
+		db.cur.execute(query, (owner_id, description, date_created, pickup_location, present_location, destination, price, status,))
 		db.connection.commit()
 		return jsonify({'message': 'parcel created', 'status': 'success'}), 201
 	else:
