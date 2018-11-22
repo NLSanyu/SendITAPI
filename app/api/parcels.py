@@ -95,6 +95,10 @@ def cancel_order(parcel_id):
 	result = db.cur.fetchall()
 	if result:
 		for row in result:
+			id = row[1]
+			name = get_owner_name(id)
+			if current_user['username'] != name:
+				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 			if row[8] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
@@ -103,7 +107,7 @@ def cancel_order(parcel_id):
 				db.cur.execute(query, (status, parcel_id,))
 				db.connection.commit()
 				db.connection.close()
-				return jsonify({'message': 'parcel updated', 'status': 'success'}), 200			
+				return jsonify({'message': 'parcel cancelled', 'status': 'success'}), 200			
 		else: 
 			db.connection.close()
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
@@ -181,6 +185,4 @@ def get_owner_name(owner_id):
 	result = db.cur.fetchall()
 	for row in result:
 		name = row[1]
-	db.connection.commit()
-	db.connection.close()
 	return name
