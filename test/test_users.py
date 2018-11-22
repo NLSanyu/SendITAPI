@@ -7,7 +7,8 @@ from app import app
 
 login_user = {"username": "sanyu", "password": "pass123"}
 signup_user = {"username": "sanyu", "email": "sanyu@gmail.com", "password": "pass123"}
-token = ""
+parcel = {"pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
+
 
 class APITestUsers(BaseTest):
 	def test_asignup(self):
@@ -34,6 +35,7 @@ class APITestUsers(BaseTest):
 		"""
 		self.client.post('/api/v1/auth/signup', data=json.dumps(signup_user), content_type='application/json')
 		token = self.get_token()
+		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		response = self.client.get('/api/v1/users/1/parcels', content_type='application/json', headers={'Authorization': token})
 		self.assertEqual(response.status_code, 200)
 
