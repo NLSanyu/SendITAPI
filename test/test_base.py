@@ -2,15 +2,9 @@ import unittest
 import os
 import json
 import pytest
-from app.models.testtables import TestTables
+from app.models.models import Tables
 from app import app
 
-"""
-parcel = {"owner": "1", "pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja Road", "description": "White envelope"}
-admin_user = {"username": "admin", "email": "adm@gmail.com", "password": "admin"}
-login_user = {"username": "sanyu", "password": "pass123456"}
-signup_user = {"username": "sanyu", "email": "sanyu@gmail.com", "password": "pass123"}
-"""
 
 class BaseTest(unittest.TestCase):
 
@@ -21,11 +15,13 @@ class BaseTest(unittest.TestCase):
 		self.admin_user = {"username": "admin", "email": "adm@gmail.com", "password": "admin"}
 		self.login_user = {"username": "sanyu", "password": "pass123456"}
 		self.signup_user = {"username": "sanyu", "email": "sanyu@gmail.com", "password": "pass123"}
-		self.tables = TestTables()
+		self.tables = Tables()
 		self.tables.create_tables()
-
+		
+	"""
 	def tearDown(self):
 		self.tables.drop_tables()
+	"""
 
 	def get_token(self):
 		"""
