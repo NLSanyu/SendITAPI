@@ -1,0 +1,25 @@
+tags:
+ - Get all parcels of a specific user
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This route is used to fetch all parcels of a user
+responses:
+  200:
+    description: Parcels retrieved
+    schema:
+      id: parcel
+      properties:
+        description:
+            type: string
+            default: parcel
+        pickup_location:
+          type: string
+          default: none
+        password:
+          location: string
+          default: none
+  400:
+    description: No parcels for this user

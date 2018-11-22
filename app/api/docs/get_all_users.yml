@@ -1,0 +1,25 @@
+tags:
+ - Get all users
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This route is used to fetch all users
+responses:
+  200:
+    description: Users retrieved
+    schema:
+      id: user
+      properties:
+        username:
+            type: string
+            default: user
+        email:
+          type: string
+          default: user@mail.com
+        password:
+          type: string
+          default: password
+  400:
+    description: Sign up failed
