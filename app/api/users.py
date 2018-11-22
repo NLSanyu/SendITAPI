@@ -1,4 +1,5 @@
 import psycopg2
+import flasgger
 import datetime
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
@@ -19,6 +20,7 @@ def api_home():
 
 @app.route('/api/v1/users', methods=['GET'])
 @jwt_required
+@flasgger.swag_from("./docs/get_all_users.yml")
 def get_all_users():
 	"""
 		Function for API endpoint to fetch all users
@@ -39,6 +41,7 @@ def get_all_users():
 	
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
 @jwt_required
+@flasgger.swag_from("./docs/get_user_parcels.yml")
 def get_user_parcels(user_id):
 	"""
 		Function for API endpoint to fetch all parcel delivery orders by a specific user
@@ -71,6 +74,7 @@ def get_user_parcels(user_id):
 	
 
 @app.route('/api/v1/auth/login', methods=['POST'])
+@flasgger.swag_from("./docs/login.yml")
 def login_user():
 	"""
 		Function for API endpoint to log a user in
@@ -98,9 +102,10 @@ def login_user():
 			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token}), 200
 		else:
 			return jsonify({'message': 'user log in failed', 'status': 'failure'}), 400
-	
 
+	
 @app.route('/api/v1/auth/signup', methods=['POST'])
+@flasgger.swag_from("./docs/signup.yml")
 def create_user():
 	"""
 		Function for API endpoint to sign a user up
