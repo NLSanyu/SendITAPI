@@ -18,26 +18,26 @@ class BaseTest(unittest.TestCase):
 		self.tables = Tables()
 		self.tables.create_tables()
 		
-	"""
 	def tearDown(self):
 		self.tables.drop_tables()
-	"""
 
 	def get_token(self):
 		"""
 			Function for getting an access token
 		"""
-		response = self.client.post('/api/v1/auth/login', json=self.login_user)
-		access_token = response.json['access_token']
-		return access_token
+		self.client.post('/api/v1/auth/signup', data=json.dumps(self.signup_user), content_type='application/json')
+		response = self.client.post('/api/v1/auth/login', data=json.dumps(self.login_user), content_type='application/json')
+		access_token = json.loads(response.data.decode())
+		return 'Bearer ' + access_token['access_token']
 
 	def get_admin_token(self):
 		"""
-			Function for getting an access token
+			Function for getting an admin access token
 		"""
-		response = self.client.post('/api/v1/auth/login', json=self.admin_user)
-		access_token = response.json['access_token']
-		return access_token
+		self.client.post('/api/v1/auth/signup', data=json.dumps(self.admin_user), content_type='application/json')
+		response = self.client.post('/api/v1/auth/login', data=json.dumps(self.admin_user), content_type='application/json')
+		access_token = json.loads(response.data.decode())
+		return 'Bearer ' + access_token['access_token']
 
 if __name__ == '__main__':
     unittest.main()
