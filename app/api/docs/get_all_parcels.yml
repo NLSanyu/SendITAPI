@@ -1,11 +1,11 @@
 tags:
- - Get all parcels of a specific user
+ - Get all parcels
 parameters:
   - in: body
     name: body
     required: true
     type: string
-    description: This route is used to fetch all parcels of a user
+    description: This route is used to fetch all parcels
 responses:
   200:
     description: Parcels retrieved
