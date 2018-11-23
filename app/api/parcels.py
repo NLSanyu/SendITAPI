@@ -1,4 +1,5 @@
 import psycopg2
+import flasgger
 import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
@@ -10,6 +11,7 @@ db = DatabaseConnection()
 
 @app.route('/api/v1/parcels', methods=['GET'])
 @jwt_required
+@flasgger.swag_from("./docs/get_all_parcels.yml")
 def get_all_parcels():
 	"""
 		Function for API endpoint to fetch all parcel delivery orders
@@ -46,6 +48,7 @@ def get_all_parcels():
 
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
 @jwt_required
+@flasgger.swag_from("./docs/get_a_parcel.yml")
 def get_parcel(parcel_id):
 	"""
 		Function for API endpoint to fetch a specific parcel delivery order
@@ -83,6 +86,7 @@ def get_parcel(parcel_id):
 
 @app.route('/api/v1/parcels/<int:parcel_id>/cancel', methods=['PUT'])
 @jwt_required
+@flasgger.swag_from("./docs/change_parcel_destination.yml")
 def cancel_order(parcel_id):
 	"""
 		Function for API endpoint to cancel a parcel delivery order
@@ -115,6 +119,7 @@ def cancel_order(parcel_id):
 
 @app.route('/api/v1/parcels/<int:parcel_id>/destination', methods=['PUT'])
 @jwt_required
+@flasgger.swag_from("./docs/cancel_a_parcel.yml")
 def change_parcel_destination(parcel_id):
 	"""
 		Function for API endpoint to change the destination of a parcel delivery order
@@ -155,6 +160,7 @@ def change_parcel_destination(parcel_id):
 
 @app.route('/api/v1/parcels', methods=['POST'])
 @jwt_required
+@flasgger.swag_from("./docs/create_parcel.yml")
 def create_parcel_order():
 	"""
 		Function for API endpoint to create a parcel delivery order
