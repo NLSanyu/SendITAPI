@@ -1,0 +1,25 @@
+tags:
+ - Change the destination of a specific parcel
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This route is used to change the destination of a specific parcel
+responses:
+  200:
+    description: Parcel destination updated
+    schema:
+      id: parcel
+      properties:
+        description:
+            type: string
+            default: parcel
+        pickup_location:
+          type: string
+          default: none
+        destination:
+          type: string
+          default: none
+  400:
+    description: Parcel already delivered or cancelled
