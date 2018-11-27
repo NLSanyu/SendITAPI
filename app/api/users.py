@@ -6,6 +6,7 @@ from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.api.helpers.user_helpers import validate_user_info, validate_email
+from app.api.helpers.parcel_helpers import convert_to_dict
 from app.api.helpers.validate_keys import validate_key
 from app import app
 
@@ -55,21 +56,9 @@ def get_user_parcels(user_id):
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
-		data_list = []
-		data = dict()
-		for row in result:
-			data['parcel_id'] = row[0]
-			data['owner_id'] = row[1]
-			data['description'] = row[2]
-			data['date_created'] = row[3]
-			data['pickup_location'] = row[4]
-			data['present_location'] = row[5]
-			data['destination'] = row[6]
-			data['price'] = row[7]
-			data['status'] = row[8]
-			data_list.append(data)
+		parcels = convert_to_dict(result)
 		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
 	
