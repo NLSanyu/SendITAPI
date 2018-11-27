@@ -74,27 +74,26 @@ class APITest(BaseTest):
 		self.assertEqual(response.status_code, 200)
 		self.assertIn("parcel destination changed", str(response.json))
 
-	# def test_change_parcel_status(self):
-	# 	"""
-	# 		Test for changing a parcel's status
-	# 	"""
-	# 	self.client.post('/api/v1/auth/signup', data=json.dumps(admin_user), content_type='application/json')
-	# 	token = self.get_admin_token()
-	# 	status = {"status": "Not picked up"}
-	# 	self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
-	# 	response = self.client.put('/api/v1/parcels/1/status', json=status, headers={'Authorization': token})
-	# 	self.assertEqual(response.status_code, 200)
-	# 	self.assertIn("parcel status updated", str(response.json))
+	def test_change_parcel_status(self):
+		"""
+			Test for changing a parcel's status
+		"""
+		self.client.post('/api/v1/auth/signup', data=json.dumps(admin_user), content_type='application/json')
+		token = self.get_admin_token()
+		status = {"status": "Not picked up"}
+		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
+		response = self.client.put('/api/v1/parcels/1/status', json=status, headers={'Authorization': token})
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel status updated", str(response.json))
 
 	# def test_change_parcel_present_location(self):
 	# 	"""
 	# 		Test for changing a parcel's present location
 	# 	"""
-	# 	self.client.post('/api/v1/auth/signup', data=json.dumps(signup_user), content_type='application/json')
-	# 	token = self.get_token()
-	# 	self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
-	# 	location = {"location": "Kampala Road"}
+	# 	self.client.post('/api/v1/auth/signup', data=json.dumps(admin_user), content_type='application/json')
 	# 	token = self.get_admin_token()
+	# 	location = {"location": "Kampala Road"}
+	# 	self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 	# 	response = self.client.put('/api/v1/parcels/1/presentLocation', json=location, headers={'Authorization': token})
 	# 	self.assertEqual(response.status_code, 200)
 	# 	self.assertIn("parcel present location updated", str(response.json))
