@@ -5,7 +5,8 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.api.helpers.validate_users import validate_user_info, validate_email, validate_key
+from app.api.helpers.user_helpers import validate_user_info, validate_email
+from app.api.helpers.validate_keys import validate_key
 from app import app
 
 db = DatabaseConnection()

@@ -19,6 +19,5 @@ def validate_email(email):
 	pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 	return re.match(pattern, email)
 
-def validate_key(req_keys, key_name):
-	return key_name in req_keys
+
 
