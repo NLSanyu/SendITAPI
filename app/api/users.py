@@ -5,9 +5,9 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.api.helpers.user_helpers import validate_user_info, validate_email
+from app.api.helpers.user_helpers import validate_email
 from app.api.helpers.parcel_helpers import convert_to_dict
-from app.api.helpers.validate_keys import validate_key
+from app.api.helpers.validate_info import validate_key, validate
 from app import app
 
 db = DatabaseConnection()
@@ -77,7 +77,7 @@ def login_user():
 		username = request.json['username'] 
 		password = request.json['password'] 
 
-	if not(validate_user_info(username) and validate_user_info(password)):
+	if not(validate(username) and validate(password)):
 		return jsonify({'message': 'invalid data', 'status': 'failure'}), 400
 	else:
 		#password = generate_password_hash(password)
@@ -113,7 +113,7 @@ def create_user():
 		email = request.json['email']
 		password = request.json['password'] 
 
-	if not(validate_user_info(username) and validate_user_info(email) and validate_email(email) and validate_user_info(password)):
+	if not(validate(username) and validate(email) and validate_email(email) and validate(password)):
 		return jsonify({'message': "user not created because of invalid information", 'status': 'failure'}), 400
 	else:
 		query = """SELECT * FROM users WHERE username = %s AND email = %s;"""

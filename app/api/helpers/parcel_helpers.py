@@ -1,20 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from app.models.models import DatabaseConnection
 
-def validate_parcel_info(info):
-	"""
-		Function to validate parcel info. Making sure the required fields are filled in and correct
-	"""
-
-	if info == "": 
-		return False
-	else:
-		if len(info) < 5 or len(info) > 124:
-			return False
-		else: 
-			return True
-
-
 def get_owner_name(owner_id):
 	query = """SELECT * FROM users WHERE id = %s"""
 	db = DatabaseConnection()
@@ -40,6 +26,6 @@ def convert_to_dict(result):
 		data['price'] = row[7]
 		data['status'] = row[8]
 		data_list.append(data)
-		
+
 	return data_list
 

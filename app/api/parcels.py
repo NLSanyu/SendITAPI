@@ -4,8 +4,8 @@ import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
-from app.api.helpers.parcel_helpers import validate_parcel_info, get_owner_name, convert_to_dict
-from app.api.helpers.validate_keys import validate_key
+from app.api.helpers.parcel_helpers import get_owner_name, convert_to_dict
+from app.api.helpers.validate_info import validate_key, validate
 from app import app
 
 db = DatabaseConnection()
@@ -163,7 +163,7 @@ def create_parcel_order():
 	status = 'New'
 	owner_id = current_user['id']
 
-	if not(validate_parcel_info(description) and validate_parcel_info(pickup_location) and validate_parcel_info(destination)):
+	if not(validate(description) and validate(pickup_location) and validate(destination)):
 		return jsonify({'message': 'parcel not created: invalid info', 'status': 'failure'}), 400
 	else:
 		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
