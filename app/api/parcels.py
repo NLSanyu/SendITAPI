@@ -4,7 +4,8 @@ import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from app.models.models import DatabaseConnection
-from app.api.helpers.validate_parcels import validate_parcel_info
+from app.api.helpers.parcel_helpers import get_owner_name, convert_to_dict
+from app.api.helpers.validate_info import validate_key, validate
 from app import app
 
 db = DatabaseConnection()
@@ -27,21 +28,9 @@ def get_all_parcels():
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
-		data_list = []
-		data = dict()
-		for row in result:
-			data['parcel_id'] = row[0]
-			data['owner_id'] = row[1]
-			data['description'] = row[2]
-			data['date_created'] = row[3]
-			data['pickup_location'] = row[4]
-			data['present_location'] = row[5]
-			data['destination'] = row[6]
-			data['price'] = row[7]
-			data['status'] = row[8]
-			data_list.append(data)
-			db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
+		parcels = convert_to_dict(result)
+		db.connection.close()
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		return jsonify({'message':'no parcels created yet', 'status':'success'}), 200
 	
@@ -62,23 +51,13 @@ def get_parcel(parcel_id):
 	db.connection.commit()
 	result = db.cur.fetchall()	
 	if result:
-		data_list = []
-		data = dict()
 		for row in result:
-			data['parcel_id'] = row[0]
-			data['owner_id'] = row[1]
-			data['description'] = row[2]
-			data['date_created'] = row[3]
-			data['pickup_location'] = row[4]
-			data['present_location'] = row[5]
-			data['destination'] = row[6]
-			data['price'] = row[7]
-			data['status'] = row[8]
-			data_list.append(data)
+			if current_user['id'] != row[1]:
+				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
+
+			parcels = convert_to_dict(result)
 			db.connection.close()
-		if current_user['id'] != data['owner_id']:
-			return jsonify({'message': 'access denied', 'status': 'failure'}), 400
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		db.connection.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
@@ -127,13 +106,13 @@ def change_parcel_destination(parcel_id):
 	current_user = get_jwt_identity()
 
 	req = request.json
-	if 'destination' in req.keys():
-		dest = request.json['destination']
-		if dest == "": 
-			return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
-		else:
-			if len(dest) > 124:
-				return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'destination'):
+		return jsonify({'message': 'missing key: no destination entered', 'status': 'failure'}), 400
+	else:
+		destination = request.json['destination']
+		if not validate(destination):
+			return jsonify({'message': 'incorrect data entered: destination empty or incorrect length', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	db.connect()
@@ -150,7 +129,7 @@ def change_parcel_destination(parcel_id):
 				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
-				db.cur.execute(query, (dest, parcel_id,))	
+				db.cur.execute(query, (destination, parcel_id,))	
 				db.connection.commit()
 				return jsonify({'message': 'parcel destination changed', 'status': 'success'}), 200
 	else: 
@@ -167,32 +146,29 @@ def create_parcel_order():
 	"""
 	current_user = get_jwt_identity()
 	
+	req = request.json
+	req_keys = req.keys()
+	if not(validate_key(req_keys, 'description') and validate_key(req_keys, 'pickup_location') and validate_key(req_keys, 'destination')):
+		return jsonify({'message': 'incomplete data entered: key/keys missing', 'status': 'failure'}), 400
+	else: 
+		description = request.json['description']
+		pickup_location = request.json['pickup_location'] 
+		destination = request.json['destination'] 
+
 	date = datetime.datetime.now()
 	date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
-
 	date_created = date_string
 	present_location = request.json['pickup_location']
 	price = ' '
 	status = 'New'
 	owner_id = current_user['id']
 
-	pickup_location = request.json['pickup_location'] 
-	destination = request.json['destination']  
-	description = request.json['description'] 
-	if validate_parcel_info(owner_id, description, pickup_location, destination):
+	if not(validate(description) and validate(pickup_location) and validate(destination)):
+		return jsonify({'message': 'parcel not created: invalid info', 'status': 'failure'}), 400
+	else:
 		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 		db.connect()
 		db.cur.execute(query, (owner_id, description, date_created, pickup_location, present_location, destination, price, status,))
 		db.connection.commit()
 		return jsonify({'message': 'parcel created', 'status': 'success'}), 201
-	else:
-		return jsonify({'message': 'parcel not created', 'status': 'failure'}), 400
 
-
-def get_owner_name(owner_id):
-	query = """SELECT * FROM users WHERE id = %s"""
-	db.cur.execute(query, (owner_id,))
-	result = db.cur.fetchall()
-	for row in result:
-		name = row[1]
-	return name
