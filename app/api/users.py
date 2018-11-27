@@ -5,7 +5,9 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.api.helpers.validate_users import validate_user_info
+from app.api.helpers.user_helpers import validate_email
+from app.api.helpers.parcel_helpers import convert_to_dict
+from app.api.helpers.validate_info import validate_key, validate
 from app import app
 
 db = DatabaseConnection()
@@ -54,21 +56,9 @@ def get_user_parcels(user_id):
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
-		data_list = []
-		data = dict()
-		for row in result:
-			data['parcel_id'] = row[0]
-			data['owner_id'] = row[1]
-			data['description'] = row[2]
-			data['date_created'] = row[3]
-			data['pickup_location'] = row[4]
-			data['present_location'] = row[5]
-			data['destination'] = row[6]
-			data['price'] = row[7]
-			data['status'] = row[8]
-			data_list.append(data)
+		parcels = convert_to_dict(result)
 		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': data_list}), 200
+		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
 	
@@ -80,14 +70,17 @@ def login_user():
 		Function for API endpoint to log a user in
 	"""
 	req = request.json
-	if 'username' in req.keys():
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'username') and validate_key(req_keys, 'password'):
+		return jsonify({'message': 'incomplete data entered: key/keys missing', 'status': 'failure'}), 400
+	else:
 		username = request.json['username'] 
-	if 'password' in req.keys():
 		password = request.json['password'] 
-	email=""
 
-	if validate_user_info(username, email, password, False):
-		password = generate_password_hash(password)
+	if not(validate(username) and validate(password)):
+		return jsonify({'message': 'invalid data', 'status': 'failure'}), 400
+	else:
+		#password = generate_password_hash(password)
 		query = """SELECT * FROM users WHERE username = %s;"""
 		db.connect()
 		db.cur.execute(query, (username,))
@@ -101,8 +94,9 @@ def login_user():
 			db.connection.close()
 			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token}), 200
 		else:
-			return jsonify({'message': 'user log in failed', 'status': 'failure'}), 400
+			return jsonify({'message': 'user log in failed, user not registered', 'status': 'failure'}), 401
 
+		
 	
 @app.route('/api/v1/auth/signup', methods=['POST'])
 @flasgger.swag_from("./docs/signup.yml")
@@ -111,16 +105,17 @@ def create_user():
 		Function for API endpoint to sign a user up
 	"""
 	req = request.json
-	if 'username' in req.keys():
+	req_keys = req.keys()
+	if not(validate_key(req_keys, 'username') and validate_key(req_keys, 'email') and validate_key(req_keys, 'password')):
+		return jsonify({'message': 'incomplete data entered: key/keys missing', 'status': 'failure'}), 400
+	else:
 		username = request.json['username'] 
-	if 'email' in req.keys():
-		email = request.json['email'] 
-	if 'password' in req.keys(): 
+		email = request.json['email']
 		password = request.json['password'] 
 
-	#password_hash = generate_password_hash(password)
-
-	if validate_user_info(username, email, password, True):
+	if not(validate(username) and validate(email) and validate_email(email) and validate(password)):
+		return jsonify({'message': "user not created because of invalid information", 'status': 'failure'}), 400
+	else:
 		query = """SELECT * FROM users WHERE username = %s AND email = %s;"""
 		db.connect()
 		db.cur.execute(query, (username, email,))
@@ -135,7 +130,6 @@ def create_user():
 			db.cur.close()
 			db.connection.close()
 			return jsonify({'message': 'user signed up successfully', 'status': 'success'}), 201
-	else:
-		return jsonify({'message': "user not created because of invalid info", 'status': 'failure'}), 400
+		
 
 

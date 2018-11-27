@@ -1,12 +1,55 @@
-var d, dest, signedIn;
+var d, dest, url = 'http://localhost:5000/api/v1';
 
-function signIn(){
-	signedIn = true;
+function getAllParcels(){
+	fetch(url)
+	.then(function() {
+		// Your code for handling the data you get from the API
+	})
+	.catch(function() {
+		alert("An error occured");
+	});
+}
+
+function signUp(){
+	var fetchData = {
+		'body': {
+			'email': 'xtine@gmail.com',
+			'password': 'xtine123',
+			'username': 'Xtine'
+		},
+		'method': 'POST'
+	};
+
+	url = 'http://localhost:5000/api/v1/auth/signup';
+
+	fetch(url, fetchData)
+	.then(function() {
+		alert('User signed up');
+	});
+}
+
+
+function logIn(){
+	var fetchData = {
+		'body': {
+			'password': 'xtine123',
+			'username': 'Xtine'
+		},
+		'method': 'POST'
+	};
+
+	url = 'http://localhost:5000/api/v1/auth/login';
+
+	fetch(url, fetchData)
+	.then(function() {
+		alert('User logged in');
+	});
 }
 
 function signOut(){
-	signedIn = false;
+
 }
+
 
 function changeDestination(){
 	d = document.getElementById('st');

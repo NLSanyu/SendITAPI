@@ -2,6 +2,7 @@ import psycopg2
 import datetime
 from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
+from app.api.helpers.validate_info import validate_key, validate
 from app.models.models import DatabaseConnection
 from app import app
 
@@ -18,13 +19,17 @@ def change_parcel_status(parcel_id):
 
 	if current_user['username'] != "admin" and current_user['password'] != "admin":
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
+	
+	req = request.json
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'status'):
+		return jsonify({'message': 'missing key: no status entered', 'status': 'failure'}), 400
+	else:
+		status = request.json['status']
+		if not validate(status):
+			return jsonify({'message': 'incorrect data entered: status empty or incorrect length', 'status': 'failure'}), 400
 
 	all_status = ["Delivered", "Cancelled", "New", "In Transit", "Not picked up"]
-	req = request.json
-	if 'status' not in req.keys():
-		return jsonify({'message': 'no status entered', 'status' :'failure'}), 400
-
-	status = request.json['status']
 	if status in all_status:
 		query = """SELECT * FROM parcels WHERE id = %s;"""
 		db.connect()
@@ -60,17 +65,16 @@ def change_parcel_location(parcel_id):
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 	req = request.json
-	if 'location' in req.keys():
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'location'):
+		return jsonify({'message': 'missing key: no location entered', 'status': 'failure'}), 400
+	else:
 		location = request.json['location']
-		if location == "": 
-			return jsonify({'message': 'present location is empty', 'status': 'failure'}), 400
-		else:
-			if len(location) > 124:
-				return jsonify({'message':'present location should not be longer than 124 characters', 'status':'failure'}), 400
+		if not validate(location):
+			return jsonify({'message': 'incorrect data entered: location empty or incorrect length', 'status': 'failure'}), 400
 
 		query = """SELECT * FROM parcels WHERE id = %s;"""
 		db.connect()
-		
 		db.cur.execute(query, (parcel_id,))
 		db.connection.commit()
 		result = db.cur.fetchall()
@@ -84,5 +88,3 @@ def change_parcel_location(parcel_id):
 					return jsonify({'message':'parcel present location updated', 'status':'success'}), 200
 		else: 
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400	
-	else:
-		return jsonify({'message': 'no location entered', 'status': 'failure'}), 400	
