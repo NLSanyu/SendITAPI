@@ -106,13 +106,13 @@ def change_parcel_destination(parcel_id):
 	current_user = get_jwt_identity()
 
 	req = request.json
-	if 'destination' in req.keys():
-		dest = request.json['destination']
-		if dest == "": 
-			return jsonify({'message': 'destination is empty', 'status': 'failure'}), 400
-		else:
-			if len(dest) > 124:
-				return jsonify({'message': 'destination should not be longer than 124 characters', 'status': 'failure'}), 400
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'destination'):
+		return jsonify({'message': 'missing key: no destination entered', 'status': 'failure'}), 400
+	else:
+		destination = request.json['destination']
+		if not validate(destination):
+			return jsonify({'message': 'incorrect data entered: destination empty or incorrect length', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	db.connect()
