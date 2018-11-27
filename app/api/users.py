@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from app.models.models import DatabaseConnection
 from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.api.helpers.validate_users import validate_user_info
+from app.api.helpers.validate_users import validate_user_info, validate_email, validate_key
 from app import app
 
 db = DatabaseConnection()
@@ -80,14 +80,17 @@ def login_user():
 		Function for API endpoint to log a user in
 	"""
 	req = request.json
-	if 'username' in req.keys():
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'username') and validate_key(req_keys, 'password'):
+		return jsonify({'message': 'incomplete data entered: key/keys missing', 'status': 'failure'}), 400
+	else:
 		username = request.json['username'] 
-	if 'password' in req.keys():
 		password = request.json['password'] 
-	email=""
 
-	if validate_user_info(username, email, password, False):
-		password = generate_password_hash(password)
+	if not(validate_user_info(username) and validate_user_info(password)):
+		return jsonify({'message': 'invalid data', 'status': 'failure'}), 400
+	else:
+		#password = generate_password_hash(password)
 		query = """SELECT * FROM users WHERE username = %s;"""
 		db.connect()
 		db.cur.execute(query, (username,))
@@ -101,8 +104,9 @@ def login_user():
 			db.connection.close()
 			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token}), 200
 		else:
-			return jsonify({'message': 'user log in failed', 'status': 'failure'}), 400
+			return jsonify({'message': 'user log in failed, user not registered', 'status': 'failure'}), 401
 
+		
 	
 @app.route('/api/v1/auth/signup', methods=['POST'])
 @flasgger.swag_from("./docs/signup.yml")
@@ -111,16 +115,17 @@ def create_user():
 		Function for API endpoint to sign a user up
 	"""
 	req = request.json
-	if 'username' in req.keys():
+	req_keys = req.keys()
+	if not(validate_key(req_keys, 'username') and validate_key(req_keys, 'email') and validate_key(req_keys, 'password')):
+		return jsonify({'message': 'incomplete data entered: key/keys missing', 'status': 'failure'}), 400
+	else:
 		username = request.json['username'] 
-	if 'email' in req.keys():
-		email = request.json['email'] 
-	if 'password' in req.keys(): 
+		email = request.json['email']
 		password = request.json['password'] 
 
-	#password_hash = generate_password_hash(password)
-
-	if validate_user_info(username, email, password, True):
+	if not(validate_user_info(username) and validate_user_info(email) and validate_email(email) and validate_user_info(password)):
+		return jsonify({'message': "user not created because of invalid information", 'status': 'failure'}), 400
+	else:
 		query = """SELECT * FROM users WHERE username = %s AND email = %s;"""
 		db.connect()
 		db.cur.execute(query, (username, email,))
@@ -135,7 +140,6 @@ def create_user():
 			db.cur.close()
 			db.connection.close()
 			return jsonify({'message': 'user signed up successfully', 'status': 'success'}), 201
-	else:
-		return jsonify({'message': "user not created because of invalid info", 'status': 'failure'}), 400
+		
 
 

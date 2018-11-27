@@ -5,9 +5,6 @@ def validate_parcel_info(owner, description, pickup_location, destination):
 		Function to validate parcel info. Making sure the required fields are filled in and correct
 	"""
 
-	if type(owner) != int: 
-		return jsonify({'message': 'parcel owner must be identified by id (integer)', 'status': 'failure'}), 400
-
 	if description == "": 
 		return jsonify({'message': 'description is empty', 'status': 'failure'}), 400
 	else:
