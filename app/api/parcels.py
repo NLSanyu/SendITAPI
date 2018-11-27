@@ -129,7 +129,7 @@ def change_parcel_destination(parcel_id):
 				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
-				db.cur.execute(query, (dest, parcel_id,))	
+				db.cur.execute(query, (destination, parcel_id,))	
 				db.connection.commit()
 				return jsonify({'message': 'parcel destination changed', 'status': 'success'}), 200
 	else: 
