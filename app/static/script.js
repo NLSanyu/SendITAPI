@@ -1,4 +1,4 @@
-var d, dest, url = 'http://localhost:5000/api/v1';
+var d, dest, url = 'localhost:5000/api/v1';
 
 function getAllParcels(){
 	fetch(url)
@@ -20,9 +20,9 @@ function signUp(){
 		'method': 'POST'
 	};
 
-	url = 'http://localhost:5000/api/v1/auth/signup';
+	url = 'localhost:5000/api/v1/auth/signup';
 
-	alert("Functon signUp");
+	alert("Function signUp");
 
 	fetch(url, fetchData)
 	.then(function() {
