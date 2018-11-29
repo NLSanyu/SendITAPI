@@ -1,4 +1,4 @@
-var d, dest, url = 'localhost:5000/api/v1';
+var url, email, password, phoneNumber, username;
 
 function getAllParcels(){
 	fetch(url)
@@ -11,9 +11,10 @@ function getAllParcels(){
 }
 
 function signUp(){
-	let email = document.getElementsById("email1").value,
-	password = document.getElementsById("password1").value,
-	phoneNumber = document.getElementsById("phone1").value,
+	//alert("......");
+	email = document.getElementsById("email1").value;
+	password = document.getElementsById("password1").value;
+	phoneNumber = document.getElementsById("phone1").value;
 	username = document.getElementsById("uname1").value;
 
 	var fetchData = {
@@ -38,11 +39,12 @@ function signUp(){
 		alert("An error occured");
 	});
 
-	window.location.href = "profile.html";
+	document.location = "profile.html";
 }
 
 
 function logIn(){
+	alert("Beginning of function")
 	var fetchData = {
 		'body': {
 			'password': 'xtine123',
@@ -53,38 +55,15 @@ function logIn(){
 
 	url = 'http://localhost:5000/api/v1/auth/login';
 
+	alert("Before fetch")
+
 	fetch(url, fetchData)
 	.then(function() {
 		alert('User logged in');
 	});
-}
 
-function signOut(){
+	alert("After fetch")
 
-}
-
-
-function changeDestination(){
-	d = document.getElementById('st');
-	if (d.innerHTML != "Delivered"){
-		dest = document.getElementById('dest');
-		dest.innerHTML = '<form> <textarea name="parcel_details" rows="2"> </textarea> <input type="submit" name="new_dest" value="Confirm" id="submit-dest"> </form>';
-	}
-	else{
-		alert("Parcel already delivered");
-	}
-}
-
-function cancelOrder(){
-	alert("Order cancelled");
-}
-
-function changePresentLocation(){
-	document.getElementById('pres-location').innerHTML = '<form name="change_pres_location"> <textarea name="parcel_details" rows="2"> </textarea> <input type="submit" name="new_pres_location" value="Confirm" id="submit-dest"> </form>';
-}
-
-function changeStatus(){
-	document.getElementById('status').innerHTML = '<form name="change_status"> <textarea name="parcel_details" rows="2"> </textarea> <input type="submit" name="new_status" value="Confirm" id="submit-dest"> </form>';
 }
 
 
