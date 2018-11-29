@@ -11,11 +11,17 @@ function getAllParcels(){
 }
 
 function signUp(){
+	let email = document.getElementsById("email1").value,
+	password = document.getElementsById("password1").value,
+	phoneNumber = document.getElementsById("phone1").value,
+	username = document.getElementsById("uname1").value;
+
 	var fetchData = {
 		'body': {
-			'email': 'xtine@gmail.com',
-			'password': 'xtine123',
-			'username': 'Xtine'
+			'email': email,
+			'password': password,
+			'phone_number': phoneNumber,
+			'username': username
 		},
 		'method': 'POST'
 	};
@@ -27,7 +33,12 @@ function signUp(){
 	fetch(url, fetchData)
 	.then(function() {
 		alert('User signed up');
+	})
+	.catch(function() {
+		alert("An error occured");
 	});
+
+	window.location.href = "profile.html";
 }
 
 

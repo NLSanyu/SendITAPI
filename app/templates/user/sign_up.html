@@ -18,26 +18,31 @@
 	
 	<div class="form">
 		<h1>Sign Up</h1>
-		<form name="sign_up_form" action="profile.html" target="_self"> 
+		<form name="sign_up_form"> 
 			<table class="form-table">
 				<tr> 
 					<td>Username</td> 
 					<td class="colon">:</td> 
-					<td> <input name="username" type="text" required> </td> 
+					<td> <input name="username" id="uname1" type="text" required> </td> 
 				</tr>  
 				<tr> 
 					<td>Email</td> 
 					<td class="colon">:</td> 
-					<td> <input name="email" type="text" required> </td> 
+					<td> <input name="email" id="email1" type="text" required> </td> 
+				</tr>  
+				<tr> 
+					<td>Phone number</td> 
+					<td class="colon">:</td> 
+					<td> <input name="email" id="phone1" type="text" required> </td> 
 				</tr>  
 				<tr> 
 					<td>Password</td> 
 					<td class="colon">:</td> 
-					<td> <input name="password" type="password" required> </td> 
+					<td> <input name="password" id="password1" type="password" required> </td> 
 				</tr>
 			</table>
 			
-			<input name="submit_button" type="submit" value="Sign Up" class="submit-button">
+			<input name="submit_button" type="submit" value="Sign Up" class="submit-button" onclick="signUp()">
 
 			
 		</form>
