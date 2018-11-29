@@ -22,6 +22,8 @@ function signUp(){
 
 	url = 'http://localhost:5000/api/v1/auth/signup';
 
+	alert("Functon signUp");
+
 	fetch(url, fetchData)
 	.then(function() {
 		alert('User signed up');
