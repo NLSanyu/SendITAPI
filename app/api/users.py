@@ -112,6 +112,10 @@ def create_user():
 		username = request.json['username'] 
 		email = request.json['email']
 		password = request.json['password'] 
+		if validate_key(req_keys, 'phone_number'):
+			phone_number = request.json['phone_number']
+		else:
+			phone_number = "none"
 
 	if not(validate(username) and validate(email) and validate_email(email) and validate(password)):
 		return jsonify({'message': "user not created because of invalid information", 'status': 'failure'}), 400
@@ -124,8 +128,8 @@ def create_user():
 		if result:
 			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
-			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
-			db.cur.execute(query, (username, email, password,))
+			query = """INSERT INTO users (username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s)"""
+			db.cur.execute(query, (username, email, password, phone_number))
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()

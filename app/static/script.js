@@ -42,29 +42,38 @@ function signUp(){
 	document.location = "profile.html";
 }
 
+function signIn(){
+	let url = 'http://127.0.0.1:5000/api/v1/auth/login';
+	let username = document.getElementById('uname2').value;
+	let password = document.getElementById('password2').value;
 
-function logIn(){
-	alert("Beginning of function")
-	var fetchData = {
-		'body': {
-			'password': 'xtine123',
-			'username': 'Xtine'
-		},
-		'method': 'POST'
-	};
+	let request_data = {
+		"username": username,
+		"password": password
+	}
 
-	url = 'http://localhost:5000/api/v1/auth/login';
+	let request_body = {
+		method: 'POST',
+            body: JSON.stringify(request_data),
+            headers: {
+                "Content-Type": "application/json"
+			},
+			mode: 'cors'
+	}
 
-	alert("Before fetch")
-
-	fetch(url, fetchData)
-	.then(function() {
-		alert('User logged in');
-	});
-
-	alert("After fetch")
-
+	fetch(url, request_body)
+	.then((res) => res.json())
+	.then((data) => {
+		reply = data["message"]
+		if(reply){
+			alert("Got msg")
+			window.location.href = "app/templates/user/index.html";
+		}
+		else{
+			alert("Did not get msg")
+		}
+	})
+	.catch((err)=>console.log(err))
 }
-
 
 
