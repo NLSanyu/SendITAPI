@@ -10,8 +10,8 @@ class DatabaseConnection():
     
     def connect(self):
         try:
-            if(os.getenv("FLASK_ENV")) == "Production":
-                self.connection = psycopg2.connect(os.getenv("DATABASE_URL"))
+            #if(os.getenv("FLASK_ENV")) == "Production":
+            #self.connection = psycopg2.connect(os.getenv("DATABASE_URL"))
             self.connection = psycopg2.connect(database="deu2c9vgu0pnkt", user = "gxncljkshyqyzc", password ="301e6b060431d6daeb1db6a79d01452abb971fc2e21fe62b9afc5ef38f98e9ae", host = "ec2-54-204-36-249.compute-1.amazonaws.com", port = "5432")
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
