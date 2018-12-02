@@ -19,27 +19,6 @@ def api_home():
 		Function for API home
 	"""
 	return "<p>SendIT API</p>"
-
-@app.route('/api/v1/users', methods=['GET'])
-@jwt_required
-@flasgger.swag_from("./docs/get_all_users.yml")
-def get_all_users():
-	"""
-		Function for API endpoint to fetch all users
-	"""
-	current_user = get_jwt_identity()
-	query = """SELECT * FROM users;"""
-	db.connect()
-	db.cur.execute(query)
-	db.connection.commit()
-	result = db.cur.fetchall()
-	if result != None:
-		db.connection.close()
-		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': result}), 200
-	else:
-		return jsonify({'message':'no users signed up yet', 'status':'failure'}), 200
-	
-			
 	
 @app.route('/api/v1/users/<int:user_id>/parcels', methods=['GET'])
 @jwt_required
@@ -112,9 +91,13 @@ def create_user():
 		username = request.json['username'] 
 		email = request.json['email']
 		password = request.json['password'] 
+		if validate_key(req_keys, 'phone_number'):
+			phone_number = request.json['phone_number']
+		else:
+			phone_number = "none"
 
 	if not(validate(username) and validate(email) and validate_email(email) and validate(password)):
-		return jsonify({'message': "user not created because of invalid information", 'status': 'failure'}), 400
+		return jsonify({'message': "user not created because of invalid username, email or password", 'status': 'failure'}), 400
 	else:
 		query = """SELECT * FROM users WHERE username = %s AND email = %s;"""
 		db.connect()
@@ -124,8 +107,8 @@ def create_user():
 		if result:
 			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
-			query = """INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)"""
-			db.cur.execute(query, (username, email, password,))
+			query = """INSERT INTO users (username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s)"""
+			db.cur.execute(query, (username, email, password, phone_number))
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()
