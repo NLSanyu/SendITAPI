@@ -109,6 +109,7 @@ def change_parcel_location(parcel_id):
 	"""
 		Function for API endpoint to change the present location of a parcel delivery order
 	"""
+	#re-test this route
 	current_user = get_jwt_identity()
 	if current_user['username'] != "admin" and current_user['password'] != "admin":
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
