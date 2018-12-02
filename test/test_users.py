@@ -11,7 +11,7 @@ parcel = {"pickup_location": "Plot 1 Kampala Road", "destination": "Plot 5 Jinja
 
 
 class APITestUsers(BaseTest):
-	def test_asignup(self):
+	def test_signup(self):
 		"""
 			Test for signing a user up
 		"""

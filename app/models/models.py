@@ -27,6 +27,7 @@ class Tables():
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(255),
             password_hash VARCHAR(255) NOT NULL,
             orders INTEGER,
             delivered INTEGER,
@@ -47,20 +48,7 @@ class Tables():
         )
         """
         )
-
-        try:
-            connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
-            cur = connection.cursor()
-            for command in commands:
-                cur.execute(command)
-            cur.close()
-            connection.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-        finally:
-            cur.close()
-            connection.close()
-
+        self.execute(commands)
 
    
     def drop_tables(self):
@@ -72,7 +60,9 @@ class Tables():
             DROP TABLE IF EXISTS parcels
         """
         )
+        self.execute(commands)
 
+    def execute(self, commands):
         try:
             connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
             cur = connection.cursor()
@@ -86,9 +76,6 @@ class Tables():
             cur.close()
             connection.close()
 
-
-  
-    
     
     
         
