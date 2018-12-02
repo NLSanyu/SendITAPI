@@ -14,8 +14,8 @@ def get_owner_name(owner_id):
 
 def convert_to_dict(result):
 	data_list = []
-	data = dict()
 	for row in result:
+		data = dict()
 		data['parcel_id'] = row[0]
 		data['owner_id'] = row[1]
 		data['description'] = row[2]

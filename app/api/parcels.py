@@ -10,31 +10,6 @@ from app import app
 
 db = DatabaseConnection()
 
-@app.route('/api/v1/parcels', methods=['GET'])
-@jwt_required
-@flasgger.swag_from("./docs/get_all_parcels.yml")
-def get_all_parcels():
-	"""
-		Function for API endpoint to fetch all parcel delivery orders
-	"""
-	current_user = get_jwt_identity()
-
-	if current_user['username'] != "admin" and current_user['password'] != "admin":
-		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
-
-	query = """SELECT * FROM parcels;"""
-	db.connect()
-	db.cur.execute(query)
-	db.connection.commit()
-	result = db.cur.fetchall()
-	if result:
-		parcels = convert_to_dict(result)
-		db.connection.close()
-		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
-	else:
-		return jsonify({'message':'no parcels created yet', 'status':'success'}), 200
-	
-
 @app.route('/api/v1/parcels/<int:parcel_id>', methods=['GET'])
 @jwt_required
 @flasgger.swag_from("./docs/get_a_parcel.yml")

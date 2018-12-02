@@ -27,6 +27,7 @@ class Tables():
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(255),
             password_hash VARCHAR(255) NOT NULL,
             orders INTEGER,
             delivered INTEGER,
