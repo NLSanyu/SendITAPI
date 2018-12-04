@@ -77,7 +77,6 @@ def login_user():
 			return jsonify({'message': 'user log in failed, user not registered', 'status': 'failure'}), 401
 
 		
-	
 @app.route('/api/v1/auth/signup', methods=['POST'])
 @flasgger.swag_from("./docs/signup.yml")
 def create_user():
