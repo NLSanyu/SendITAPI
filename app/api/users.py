@@ -67,8 +67,7 @@ def login_user():
 		db.connection.commit()
 		result = db.cur.fetchone()
 		if result:
-			#for row in result:
-				#req['id'] = row[0]
+			req['id'] = result[0]
 			access_token = create_access_token(identity = req)
 			user_info = convert_one_user_to_dict(result)
 			db.cur.close()
@@ -110,7 +109,7 @@ def create_user():
 			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
 			query = """INSERT INTO users (username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s)"""
-			db.cur.execute(query, (username, email, password, phone_number))
+			db.cur.execute(query, (username, email, phone_number, password))
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()
