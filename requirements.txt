@@ -26,6 +26,7 @@ marshmallow==2.16.1
 marshmallow-sqlalchemy==0.14.1
 mistune==0.8.4
 more-itertools==4.3.0
+pipenv==2018.11.26
 pluggy==0.8.0
 psycopg2==2.7.6.1
 py==1.7.0
@@ -41,5 +42,6 @@ PyYAML==3.13
 requests==2.20.1
 six==1.11.0
 urllib3==1.24.1
+virtualenv==16.1.0
+virtualenv-clone==0.4.0
 Werkzeug==0.14.1
-
