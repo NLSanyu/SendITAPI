@@ -11,17 +11,16 @@ class DatabaseConnection():
 
     def __init__(self):
         host = self.host
-		database = self.database
-		user = self.user
-		password = self.password
+	database = self.database
+	user = self.user
+	password = self.password
         self.connection = None
         self.cur = None
     
     def connect(self):
         try:
             #self.connection = psycopg2.connect(os.getenv("DATABASE_URL"))
-            self.connection = psycopg2.connect(host=str(self.host), database=str(self.database),
-		user= str(self.user), password=str(self.password))
+            self.connection = psycopg2.connect(host=str(self.host), database=str(self.database), user=str(self.user), password=str(self.password))
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
             self.cur.close()
