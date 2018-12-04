@@ -10,12 +10,12 @@ class DatabaseConnection():
     password = '301e6b060431d6daeb1db6a79d01452abb971fc2e21fe62b9afc5ef38f98e9ae'
 
     def __init__(self):
-        host = self.host
-	database = self.database
-	user = self.user
-	password = self.password
-        self.connection = None
-        self.cur = None
+		host = self.host
+		database = self.database
+		user = self.user
+		password = self.password
+		self.connection = None
+		self.cur = None
     
     def connect(self):
         try:
