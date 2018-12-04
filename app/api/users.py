@@ -65,10 +65,10 @@ def login_user():
 		db.connect()
 		db.cur.execute(query, (username, password,))
 		db.connection.commit()
-		result = db.cur.fetchall()
+		result = db.cur.fetchone()
 		if result:
-			for row in result:
-				req['id'] = row[0]
+			#for row in result:
+				#req['id'] = row[0]
 			access_token = create_access_token(identity = req)
 			user_info = convert_one_user_to_dict(result)
 			db.cur.close()
