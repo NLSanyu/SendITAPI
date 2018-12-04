@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.api.helpers.user_helpers import validate_email
 from app.api.helpers.parcel_helpers import convert_to_dict
+from app.api.helpers.user_helpers import convert_users_to_dict, convert_one_user_to_dict
 from app.api.helpers.validate_info import validate_key, validate
 from app import app
 
@@ -60,23 +61,22 @@ def login_user():
 		return jsonify({'message': 'invalid data', 'status': 'failure'}), 400
 	else:
 		#password = generate_password_hash(password)
-		query = """SELECT * FROM users WHERE username = %s;"""
+		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
 		db.connect()
-		db.cur.execute(query, (username,))
+		db.cur.execute(query, (username, password,))
 		db.connection.commit()
-		result = db.cur.fetchall()
+		result = db.cur.fetchone()
 		if result:
-			for row in result:
-				req['id'] = row[0]
+			req['id'] = result[0]
 			access_token = create_access_token(identity = req)
+			user_info = convert_one_user_to_dict(result)
 			db.cur.close()
 			db.connection.close()
-			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token}), 200
+			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token, 'user_info': user_info}), 200
 		else:
 			return jsonify({'message': 'user log in failed, user not registered', 'status': 'failure'}), 401
 
 		
-	
 @app.route('/api/v1/auth/signup', methods=['POST'])
 @flasgger.swag_from("./docs/signup.yml")
 def create_user():
@@ -108,7 +108,7 @@ def create_user():
 			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
 			query = """INSERT INTO users (username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s)"""
-			db.cur.execute(query, (username, email, password, phone_number))
+			db.cur.execute(query, (username, email, phone_number, password))
 			db.connection.commit()
 			db.cur.close()
 			db.connection.close()

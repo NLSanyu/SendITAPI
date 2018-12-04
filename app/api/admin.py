@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from app.api.helpers.validate_info import validate_key, validate
 from app.api.helpers.parcel_helpers import get_owner_name, convert_to_dict
-from app.api.helpers.user_helpers import convert_user_to_dict
+from app.api.helpers.user_helpers import convert_users_to_dict
 from app.models.models import DatabaseConnection
 from app import app
 
@@ -27,7 +27,7 @@ def get_all_users():
 	db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
-		users = convert_user_to_dict(result)
+		users = convert_users_to_dict(result)
 		db.connection.close()
 		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': users}), 200
 	else:
