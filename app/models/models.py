@@ -20,7 +20,7 @@ class DatabaseConnection():
     def connect(self):
         try:
             #self.connection = psycopg2.connect(os.getenv("DATABASE_URL"))
-            self.conn = psycopg2.connect(host=str(self.host), database=str(self.database),
+            self.connection = psycopg2.connect(host=str(self.host), database=str(self.database),
 		user= str(self.user), password=str(self.password))
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
