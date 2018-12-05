@@ -24,6 +24,17 @@ class DatabaseConnection():
 
 class Tables():
 
+    host = 'ec2-54-204-36-249.compute-1.amazonaws.com'
+    database = 'deu2c9vgu0pnkt'
+    user = 'gxncljkshyqyzc'
+    password = '301e6b060431d6daeb1db6a79d01452abb971fc2e21fe62b9afc5ef38f98e9ae'
+
+    def __init__(self):
+        host = self.host
+        database = self.database
+        user = self.user
+        password = self.password
+
     def create_tables(self):
         commands = (
         """
@@ -68,7 +79,7 @@ class Tables():
 
     def execute(self, commands):
         try:
-            connection = psycopg2.connect(database="testdb", user = "postgres", password ="memine", host = "127.0.0.1", port = "5432")
+            connection = psycopg2.connect(host=str(self.host), database=str(self.database), user=str(self.user), password=str(self.password))
             cur = connection.cursor()
             for command in commands:
                 cur.execute(command)
