@@ -12,4 +12,7 @@ app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 jwt = JWTManager(app)
 CORS(app)
 
+from app.models.models import Tables 
+tables = Tables()
+tables.create_tables()
 from app.api import users, parcels, admin
