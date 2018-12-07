@@ -13,14 +13,15 @@ class DatabaseConnection():
         database = self.database
         user = self.user
         password = self.password
-        
-    def connect(self):
         try:
             self.connection = psycopg2.connect(host=str(self.host), database=str(self.database), user=str(self.user), password=str(self.password))
+            self.connection.autocommit = True
             self.cur = self.connection.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
-            self.cur.close()
-            self.connection.close()
+            print(error)
+        
+    def connect(self):
+        pass
 
 class Tables():
     host = 'ec2-54-204-36-249.compute-1.amazonaws.com'

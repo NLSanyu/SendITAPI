@@ -22,13 +22,13 @@ def get_all_users():
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM users ORDER BY id DESC;"""
-	db.connect()
+	#db.connect()
 	db.cur.execute(query)
-	db.connection.commit()
+	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		users = convert_users_to_dict(result)
-		db.connection.close()
+		#db.connection.close()
 		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': users}), 200
 	else:
 		return jsonify({'message':'no users signed up yet', 'status':'failure'}), 200
@@ -46,13 +46,13 @@ def get_all_parcels():
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels ORDER BY id DESC;"""
-	db.connect()
+	#db.connect()
 	db.cur.execute(query)
-	db.connection.commit()
+	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		parcels = convert_to_dict(result)
-		db.connection.close()
+		#db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		return jsonify({'message':'no parcels created yet', 'status':'success'}), 200
@@ -81,9 +81,9 @@ def change_parcel_status(parcel_id):
 	all_status = ["Delivered", "Cancelled", "New", "In Transit", "Not picked up"]
 	if status in all_status:
 		query = """SELECT * FROM parcels WHERE id = %s;"""
-		db.connect()
+		#db.connect()
 		db.cur.execute(query, (parcel_id,))
-		db.connection.commit()
+		#db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
 			for row in result:
@@ -92,12 +92,12 @@ def change_parcel_status(parcel_id):
 				else:
 					query = """UPDATE parcels SET status = %s WHERE id = %s"""
 					db.cur.execute(query, (status, parcel_id,))
-					db.cur.close()
-					db.connection.close()
+					#db.cur.close()
+					#db.connection.close()
 					return jsonify({'message': 'parcel status updated', 'status' :'success'}), 200	
 		else: 	
 			db.cur.close()
-			db.connection.close()
+			#db.connection.close()
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
 	else:
 		return jsonify({'message': 'incorrect status', 'status': 'failure'}), 400	
@@ -124,9 +124,9 @@ def change_parcel_location(parcel_id):
 			return jsonify({'message': 'incorrect data entered: location empty or incorrect length', 'status': 'failure'}), 400
 
 		query = """SELECT * FROM parcels WHERE id = %s;"""
-		db.connect()
+		#db.connect()
 		db.cur.execute(query, (parcel_id,))
-		db.connection.commit()
+		#db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
 			for row in result:

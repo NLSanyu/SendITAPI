@@ -21,9 +21,9 @@ def get_parcel(parcel_id):
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	
-	db.connect()
+	#db.connect()
 	db.cur.execute(query, (parcel_id,))
-	db.connection.commit()
+	#db.connection.commit()
 	result = db.cur.fetchall()	
 	if result:
 		for row in result:
@@ -31,10 +31,10 @@ def get_parcel(parcel_id):
 				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 			parcels = convert_to_dict(result)
-			db.connection.close()
+			#db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
-		db.connection.close()
+		#db.connection.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
 
 
@@ -48,7 +48,7 @@ def cancel_order(parcel_id):
 	current_user = get_jwt_identity()
 	
 	query = """SELECT * FROM parcels WHERE id = %s;"""
-	db.connect()
+	#db.connect()
 	db.cur.execute(query, (parcel_id,))
 	result = db.cur.fetchall()
 	if result:
@@ -63,11 +63,11 @@ def cancel_order(parcel_id):
 				query = """UPDATE parcels SET status = %s WHERE id = %s"""
 				status = "Cancelled"
 				db.cur.execute(query, (status, parcel_id,))
-				db.connection.commit()
-				db.connection.close()
+				#db.connection.commit()
+				#db.connection.close()
 				return jsonify({'message': 'parcel cancelled', 'status': 'success'}), 200			
 	else: 
-		db.connection.close()
+		#db.connection.close()
 		return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
 		
 
@@ -90,9 +90,9 @@ def change_parcel_destination(parcel_id):
 			return jsonify({'message': 'incorrect data entered: destination empty or incorrect length', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
-	db.connect()
+	#db.connect()
 	db.cur.execute(query, (parcel_id,))
-	db.connection.commit()
+	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		for row in result:
@@ -105,12 +105,12 @@ def change_parcel_destination(parcel_id):
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
 				db.cur.execute(query, (destination, parcel_id,))	
-				db.connection.commit()
+				#db.connection.commit()
 				return jsonify({'message': 'parcel destination changed', 'status': 'success'}), 200
 	else: 
 		return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
 
-	db.connection.close()
+	#db.connection.close()
 
 @app.route('/api/v1/parcels', methods=['POST'])
 @jwt_required
@@ -142,8 +142,8 @@ def create_parcel_order():
 		return jsonify({'message': 'parcel not created: invalid info', 'status': 'failure'}), 400
 	else:
 		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-		db.connect()
+		#db.connect()
 		db.cur.execute(query, (owner_id, description, date_created, pickup_location, present_location, destination, price, status,))
-		db.connection.commit()
+		#db.connection.commit()
 		return jsonify({'message': 'parcel created', 'status': 'success'}), 201
 
