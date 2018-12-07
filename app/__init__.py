@@ -8,7 +8,6 @@ from app.models.models import Tables
 
 
 tables = Tables()
-tables.create_tables()
 
 app = Flask(__name__)
 tables.create_tables()
