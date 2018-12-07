@@ -5,7 +5,7 @@ import flask_jwt_extended
 import flasgger
 from flask_jwt_extended import JWTManager
 from app.models.models import Tables
-from app.api import users, parcels, admin 
+
 
 tables = Tables()
 tables.create_tables()
@@ -17,6 +17,8 @@ flasgger.Swagger(app)
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 jwt = JWTManager(app)
 CORS(app)
+
+from app.api import users, parcels, admin 
 
 
 

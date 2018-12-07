@@ -8,19 +8,24 @@ class DatabaseConnection():
 	user = 'gxncljkshyqyzc'
 	password = '301e6b060431d6daeb1db6a79d01452abb971fc2e21fe62b9afc5ef38f98e9ae'
 
-	def __init__(self):
-		host = self.host
-		database = self.database
-		user = self.user
-		password = self.password
-	
-	def connect(self):
-		try:
-			self.connection = psycopg2.connect(host=str(self.host), database=str(self.database), user=str(self.user), password=str(self.password))
-			self.cur = self.connection.cursor()
-		except (Exception, psycopg2.DatabaseError) as error:
-			self.cur.close()
-			self.connection.close()
+    # host = "127.0.0.1" 
+    # database = "testdb"
+    # user = "postgres"
+    # password = "memine"
+    
+    def __init__(self):
+        host = self.host
+        database = self.database
+        user = self.user
+        password = self.password
+        
+    def connect(self):
+        try:
+            self.connection = psycopg2.connect(host=str(self.host), database=str(self.database), user=str(self.user), password=str(self.password))
+            self.cur = self.connection.cursor()
+        except (Exception, psycopg2.DatabaseError) as error:
+            self.cur.close()
+            self.connection.close()
 
 class Tables():
 
@@ -28,6 +33,11 @@ class Tables():
     database = 'deu2c9vgu0pnkt'
     user = 'gxncljkshyqyzc'
     password = '301e6b060431d6daeb1db6a79d01452abb971fc2e21fe62b9afc5ef38f98e9ae'
+
+    # host = "127.0.0.1" 
+    # database = "testdb"
+    # user = "postgres"
+    # password = "memine"
 
     def __init__(self):
         host = self.host
