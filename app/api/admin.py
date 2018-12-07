@@ -21,7 +21,7 @@ def get_all_users():
 	if current_user['username'] != "admin" and current_user['password'] != "admin":
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
-	query = """SELECT * FROM users;"""
+	query = """SELECT * FROM users ORDER BY id DESC;"""
 	db.connect()
 	db.cur.execute(query)
 	db.connection.commit()
@@ -45,7 +45,7 @@ def get_all_parcels():
 	if current_user['username'] != "admin" and current_user['password'] != "admin":
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
-	query = """SELECT * FROM parcels;"""
+	query = """SELECT * FROM parcels ORDER BY id DESC;"""
 	db.connect()
 	db.cur.execute(query)
 	db.connection.commit()

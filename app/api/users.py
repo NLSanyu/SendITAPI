@@ -68,7 +68,8 @@ def login_user():
 		result = db.cur.fetchone()
 		if result:
 			req['id'] = result[0]
-			access_token = create_access_token(identity = req)
+			expiry = datetime.timedelta(days=1)
+			access_token = create_access_token(identity = req, expires_delta=expiry)
 			user_info = convert_one_user_to_dict(result)
 			db.cur.close()
 			db.connection.close()
