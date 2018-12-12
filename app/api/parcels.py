@@ -130,12 +130,12 @@ def create_parcel_order():
 		pickup_location = request.json['pickup_location'] 
 		destination = request.json['destination'] 
 
-	date = datetime.datetime.now()
-	date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
-	date_created = date_string
+	date_created = datetime.datetime.now()
+	#date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
+	#date_created = date_string
 	present_location = request.json['pickup_location']
 	price = ' '
-	status = 'New'
+	status = 'Pending'
 	owner_id = current_user['id']
 
 	if not(validate(description) and validate(pickup_location) and validate(destination)):

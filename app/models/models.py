@@ -54,7 +54,7 @@ class Tables():
             id SERIAL PRIMARY KEY,
             owner_id INTEGER NOT NULL,
             description VARCHAR(255) NOT NULL,
-            date_created VARCHAR(255) NOT NULL,
+            date_created TIMESTAMP NOT NULL,
             pickup_location VARCHAR(255) NOT NULL,
             present_location VARCHAR(255) NOT NULL,
             destination VARCHAR(255) NOT NULL,

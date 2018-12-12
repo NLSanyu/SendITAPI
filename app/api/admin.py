@@ -78,7 +78,7 @@ def change_parcel_status(parcel_id):
 		if not validate(status):
 			return jsonify({'message': 'incorrect data entered: status empty or incorrect length', 'status': 'failure'}), 400
 
-	all_status = ["Delivered", "Cancelled", "New", "In Transit", "Not picked up"]
+	all_status = ["Delivered", "Cancelled", "Pending", "In Transit"]
 	if status in all_status:
 		query = """SELECT * FROM parcels WHERE id = %s;"""
 		#db.connect()
