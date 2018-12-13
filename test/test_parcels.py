@@ -59,8 +59,8 @@ class APITest(BaseTest):
 		token = self.get_token()
 		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		response = self.client.put('/api/v1/parcels/1/cancel', content_type='application/json', headers={'Authorization': token})
-		self.assertEqual(response.status_code, 400)
-		self.assertIn("parcel non-existent", str(response.json))
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel cancelled", str(response.json))
 
 	def test_change_parcel_dest(self):
 		"""
