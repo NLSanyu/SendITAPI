@@ -80,7 +80,7 @@ class APITest(BaseTest):
 		"""
 		self.client.post('/api/v1/auth/signup', data=json.dumps(admin_user), content_type='application/json')
 		token = self.get_admin_token()
-		status = {"status": "Not picked up"}
+		status = {"status": "In Transit"}
 		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		response = self.client.put('/api/v1/parcels/1/status', json=status, headers={'Authorization': token})
 		self.assertEqual(response.status_code, 200)
