@@ -48,10 +48,6 @@ def cancel_order(parcel_id):
 	result = db.cur.fetchall()
 	if result:
 		for row in result:
-			id = row[1]
-			name = get_owner_name(id)
-			if current_user['username'] != name:
-				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 			if row[9] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
@@ -86,10 +82,6 @@ def change_parcel_destination(parcel_id):
 	result = db.cur.fetchall()
 	if result:
 		for row in result:
-			id = row[1]
-			name = get_owner_name(id)
-			if current_user['username'] != name:
-				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 			if (row[9] == "Delivered" or row[9] == "Cancelled"):
 				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
 			else:
