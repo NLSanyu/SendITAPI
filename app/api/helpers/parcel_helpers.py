@@ -23,8 +23,9 @@ def convert_to_dict(result):
 		data['pickup_location'] = row[4]
 		data['present_location'] = row[5]
 		data['destination'] = row[6]
-		data['price'] = row[7]
-		data['status'] = row[8]
+		data['weight'] = row[7]
+		data['price'] = row[8]
+		data['status'] = row[9]
 		data_list.append(data)
 
 	return data_list

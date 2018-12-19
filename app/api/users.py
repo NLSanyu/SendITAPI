@@ -13,7 +13,6 @@ from app import app
 
 db = DatabaseConnection()
 
-#api
 @app.route('/api/v1', methods=['GET'])
 def api_home():
 	"""
@@ -30,14 +29,11 @@ def get_user_parcels(user_id):
 	"""
 	current_user = get_jwt_identity()
 
-	query = """SELECT * FROM parcels WHERE owner_id = %s;"""
-	#db.connect()
+	query = """SELECT * FROM parcels WHERE owner_id = %s ORDER BY id DESC;"""
 	db.cur.execute(query, (user_id,))
-	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		parcels = convert_to_dict(result)
-		#db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		return jsonify({'message':'no parcels for this user', 'status':'failure'}), 400
@@ -60,19 +56,14 @@ def login_user():
 	if not(validate(username) and validate(password)):
 		return jsonify({'message': 'invalid data', 'status': 'failure'}), 400
 	else:
-		#password = generate_password_hash(password)
 		query = """SELECT * FROM users WHERE username = %s AND password_hash = %s;"""
-		#db.connect()
 		db.cur.execute(query, (username, password,))
-		#db.connection.commit()
 		result = db.cur.fetchone()
 		if result:
 			req['id'] = result[0]
 			expiry = datetime.timedelta(days=1)
 			access_token = create_access_token(identity = req, expires_delta=expiry)
 			user_info = convert_one_user_to_dict(result)
-			#db.cur.close()
-			#db.connection.close()
 			return jsonify({'message': 'user logged in succesfully', 'status': 'success', 'access_token': access_token, 'user_info': user_info}), 200
 		else:
 			return jsonify({'message': 'user log in failed, user not registered', 'status': 'failure'}), 401
@@ -97,22 +88,22 @@ def create_user():
 		else:
 			phone_number = "none"
 
+		if validate_key(req_keys, 'full_name'):
+			full_name = request.json['full_name']
+		else:
+			full_name = "none"
+
 	if not(validate(username) and validate(email) and validate_email(email) and validate(password)):
 		return jsonify({'message': "user not created because of invalid username, email or password", 'status': 'failure'}), 400
 	else:
 		query = """SELECT * FROM users WHERE username = %s AND email = %s;"""
-		#db.connect()
 		db.cur.execute(query, (username, email,))
-		#db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
 			return jsonify({'message': "user already exists", 'status': 'failure'}), 400
 		else:
-			query = """INSERT INTO users (username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s)"""
-			db.cur.execute(query, (username, email, phone_number, password))
-			#db.connection.commit()
-			#db.cur.close()
-			#db.connection.close()
+			query = """INSERT INTO users (full_name, username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s, %s)"""
+			db.cur.execute(query, (full_name, username, email, phone_number, password))
 			return jsonify({'message': 'user signed up successfully', 'status': 'success'}), 201
 		
 

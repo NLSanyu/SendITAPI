@@ -40,13 +40,11 @@ class Tables():
         """
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
+            full_name VARCHAR(255),
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             phone_number VARCHAR(255),
-            password_hash VARCHAR(255) NOT NULL,
-            orders INTEGER,
-            delivered INTEGER,
-            in_transit INTEGER
+            password_hash VARCHAR(255) NOT NULL
         )
         """,
         """
@@ -58,6 +56,7 @@ class Tables():
             pickup_location VARCHAR(255) NOT NULL,
             present_location VARCHAR(255) NOT NULL,
             destination VARCHAR(255) NOT NULL,
+            weight VARCHAR(255),
             price VARCHAR(255) NOT NULL,
             status VARCHAR(255) NOT NULL
         )

@@ -22,13 +22,10 @@ def get_all_users():
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM users ORDER BY id DESC;"""
-	#db.connect()
 	db.cur.execute(query)
-	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		users = convert_users_to_dict(result)
-		#db.connection.close()
 		return jsonify({'message': 'users retrieved', 'status': 'success', 'data': users}), 200
 	else:
 		return jsonify({'message':'no users signed up yet', 'status':'failure'}), 200
@@ -46,13 +43,10 @@ def get_all_parcels():
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels ORDER BY id DESC;"""
-	#db.connect()
 	db.cur.execute(query)
-	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		parcels = convert_to_dict(result)
-		#db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
 		return jsonify({'message':'no parcels created yet', 'status':'success'}), 200
@@ -81,23 +75,18 @@ def change_parcel_status(parcel_id):
 	all_status = ["Delivered", "Cancelled", "Pending", "In Transit"]
 	if status in all_status:
 		query = """SELECT * FROM parcels WHERE id = %s;"""
-		#db.connect()
 		db.cur.execute(query, (parcel_id,))
-		#db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
 			for row in result:
-				if row[8] == "Delivered":
+				if row[9] == "Delivered":
 					return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 				else:
 					query = """UPDATE parcels SET status = %s WHERE id = %s"""
 					db.cur.execute(query, (status, parcel_id,))
-					#db.cur.close()
-					#db.connection.close()
 					return jsonify({'message': 'parcel status updated', 'status' :'success'}), 200	
 		else: 	
 			db.cur.close()
-			#db.connection.close()
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
 	else:
 		return jsonify({'message': 'incorrect status', 'status': 'failure'}), 400	
@@ -109,7 +98,6 @@ def change_parcel_location(parcel_id):
 	"""
 		Function for API endpoint to change the present location of a parcel delivery order
 	"""
-	#re-test this route
 	current_user = get_jwt_identity()
 	if current_user['username'] != "admin" and current_user['password'] != "admin":
 		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
@@ -124,13 +112,11 @@ def change_parcel_location(parcel_id):
 			return jsonify({'message': 'incorrect data entered: location empty or incorrect length', 'status': 'failure'}), 400
 
 		query = """SELECT * FROM parcels WHERE id = %s;"""
-		#db.connect()
 		db.cur.execute(query, (parcel_id,))
-		#db.connection.commit()
 		result = db.cur.fetchall()
 		if result:
 			for row in result:
-				if row[8] == "Delivered":
+				if row[9] == "Delivered":
 					return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 				else:
 					query = """UPDATE parcels SET present_location = %s WHERE id = %s"""
@@ -138,3 +124,70 @@ def change_parcel_location(parcel_id):
 					return jsonify({'message':'parcel present location updated', 'status':'success'}), 200
 		else: 
 			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400	
+
+
+@app.route('/api/v1/parcels/<int:parcel_id>/price', methods=['PUT'])
+@jwt_required
+def edit_parcel_price(parcel_id):
+	"""
+		Function for API endpoint to enter/edit the price of a parcel delivery order
+	"""
+	current_user = get_jwt_identity()
+
+	if current_user['username'] != "admin" and current_user['password'] != "admin":
+		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
+	
+	req = request.json
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'price'):
+		return jsonify({'message': 'missing key: no price entered', 'status': 'failure'}), 400
+	else:
+		price = request.json['price']
+		query = """SELECT * FROM parcels WHERE id = %s;"""
+		db.cur.execute(query, (parcel_id,))
+		result = db.cur.fetchall()
+		if result:
+			for row in result:
+				if row[9] == "Cancelled":
+					return jsonify({'message': 'parcel already cancelled', 'status': 'failure'}), 400
+				else:
+					query = """UPDATE parcels SET price = %s WHERE id = %s"""
+					db.cur.execute(query, (price, parcel_id,))
+					return jsonify({'message': 'parcel price edited', 'status' :'success'}), 200	
+		else: 	
+			db.cur.close()
+			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
+
+
+@app.route('/api/v1/parcels/<int:parcel_id>/weight', methods=['PUT'])
+@jwt_required
+def edit_parcel_weight(parcel_id):
+	"""
+		Function for API endpoint to enter/edit the weight of a parcel delivery order
+	"""
+	current_user = get_jwt_identity()
+
+	if current_user['username'] != "admin" and current_user['password'] != "admin":
+		return jsonify({'message': 'access denied', 'status': 'failure'}), 400
+	
+	req = request.json
+	req_keys = req.keys()
+	if not validate_key(req_keys, 'weight'):
+		return jsonify({'message': 'missing key: no weight entered', 'status': 'failure'}), 400
+	else:
+		weight = request.json['weight']
+		query = """SELECT * FROM parcels WHERE id = %s;"""
+		db.cur.execute(query, (parcel_id,))
+		result = db.cur.fetchall()
+		if result:
+			for row in result:
+				if row[9] == "Cancelled":
+					return jsonify({'message': 'parcel already cancelled', 'status': 'failure'}), 400
+				else:
+					query = """UPDATE parcels SET weight = %s WHERE id = %s"""
+					db.cur.execute(query, (weight, parcel_id,))
+					return jsonify({'message': 'parcel weight edited', 'status' :'success'}), 200	
+		else: 	
+			db.cur.close()
+			return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
+	

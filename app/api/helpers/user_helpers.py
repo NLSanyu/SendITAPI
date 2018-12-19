@@ -10,13 +10,11 @@ def convert_users_to_dict(result):
 	for row in result:
 		data = dict()
 		data['user_id'] = row[0]
-		data['username'] = row[1]
-		data['email'] = row[2]
-		data['phone_number'] = row[3]
-		data['password_hash'] = row[4]
-		data['orders'] = row[5]
-		data['delivered'] = row[6]
-		data['in_transit'] = row[7]
+		data['full_name'] = row[1]
+		data['username'] = row[2]
+		data['email'] = row[3]
+		data['phone_number'] = row[4]
+		data['password_hash'] = row[5]
 		data_list.append(data)
 
 	return data_list
@@ -24,12 +22,10 @@ def convert_users_to_dict(result):
 def convert_one_user_to_dict(row):
 	data = dict()
 	data['user_id'] = row[0]
-	data['username'] = row[1]
-	data['email'] = row[2]
-	data['phone_number'] = row[3]
-	data['orders'] = row[5]
-	data['delivered'] = row[6]
-	data['in_transit'] = row[7]
+	data['full_name'] = row[1]
+	data['username'] = row[2]
+	data['email'] = row[3]
+	data['phone_number'] = row[4]
 		
 	return data
 

@@ -21,9 +21,7 @@ def get_parcel(parcel_id):
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
 	
-	#db.connect()
 	db.cur.execute(query, (parcel_id,))
-	#db.connection.commit()
 	result = db.cur.fetchall()	
 	if result:
 		for row in result:
@@ -31,10 +29,8 @@ def get_parcel(parcel_id):
 				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
 
 			parcels = convert_to_dict(result)
-			#db.connection.close()
 		return jsonify({'message': 'parcels retrieved', 'status': 'success', 'data': parcels}), 200
 	else:
-		#db.connection.close()
 		return jsonify({'message': 'no parcel with this id', 'status': 'failure'}), 400
 
 
@@ -48,7 +44,6 @@ def cancel_order(parcel_id):
 	current_user = get_jwt_identity()
 	
 	query = """SELECT * FROM parcels WHERE id = %s;"""
-	#db.connect()
 	db.cur.execute(query, (parcel_id,))
 	result = db.cur.fetchall()
 	if result:
@@ -57,17 +52,14 @@ def cancel_order(parcel_id):
 			name = get_owner_name(id)
 			if current_user['username'] != name:
 				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
-			if row[8] == "Delivered":
+			if row[9] == "Delivered":
 				return jsonify({'message': 'parcel already delivered', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET status = %s WHERE id = %s"""
 				status = "Cancelled"
 				db.cur.execute(query, (status, parcel_id,))
-				#db.connection.commit()
-				#db.connection.close()
 				return jsonify({'message': 'parcel cancelled', 'status': 'success'}), 200			
 	else: 
-		#db.connection.close()
 		return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 400
 		
 
@@ -90,9 +82,7 @@ def change_parcel_destination(parcel_id):
 			return jsonify({'message': 'incorrect data entered: destination empty or incorrect length', 'status': 'failure'}), 400
 
 	query = """SELECT * FROM parcels WHERE id = %s;"""
-	#db.connect()
 	db.cur.execute(query, (parcel_id,))
-	#db.connection.commit()
 	result = db.cur.fetchall()
 	if result:
 		for row in result:
@@ -100,17 +90,15 @@ def change_parcel_destination(parcel_id):
 			name = get_owner_name(id)
 			if current_user['username'] != name:
 				return jsonify({'message': 'access denied', 'status': 'failure'}), 400
-			if (row[8] == "Delivered" or row[8] == "Cancelled"):
+			if (row[9] == "Delivered" or row[9] == "Cancelled"):
 				return jsonify({'message': 'parcel already delivered or cancelled', 'status': 'failure'}), 400
 			else:
 				query = """UPDATE parcels SET destination = %s WHERE id = %s"""
 				db.cur.execute(query, (destination, parcel_id,))	
-				#db.connection.commit()
 				return jsonify({'message': 'parcel destination changed', 'status': 'success'}), 200
 	else: 
 		return jsonify({'message': 'parcel non-existent', 'status': 'failure'}), 404
 
-	#db.connection.close()
 
 @app.route('/api/v1/parcels', methods=['POST'])
 @jwt_required
@@ -131,19 +119,16 @@ def create_parcel_order():
 		destination = request.json['destination'] 
 
 	date_created = datetime.datetime.now()
-	#date_string = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
-	#date_created = date_string
 	present_location = request.json['pickup_location']
-	price = ' '
+	price = 'UGX 3000'
+	weight = ' '
 	status = 'Pending'
 	owner_id = current_user['id']
 
 	if not(validate(description) and validate(pickup_location) and validate(destination)):
 		return jsonify({'message': 'parcel not created: invalid info', 'status': 'failure'}), 400
 	else:
-		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-		#db.connect()
-		db.cur.execute(query, (owner_id, description, date_created, pickup_location, present_location, destination, price, status,))
-		#db.connection.commit()
+		query = """INSERT INTO parcels (owner_id, description, date_created, pickup_location, present_location, destination, weight, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+		db.cur.execute(query, (owner_id, description, date_created, pickup_location, present_location, destination, weight, price, status,))
 		return jsonify({'message': 'parcel created', 'status': 'success'}), 201
 
