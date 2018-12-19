@@ -1,6 +1,7 @@
 [run]
 omit =
     */tests*
+    */helpers/*
 
 [report]
 exclude_lines =
