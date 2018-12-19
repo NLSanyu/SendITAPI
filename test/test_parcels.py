@@ -71,8 +71,8 @@ class APITest(BaseTest):
 		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		dest = {"destination": "Kampala"}
 		response = self.client.put('/api/v1/parcels/1/destination', json=dest, headers={'Authorization': token})
-		self.assertEqual(response.status_code, 400)
-		#self.assertIn("parcel destination changed", str(response.json))
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel destination changed", str(response.json))
 
 	def test_change_parcel_status(self):
 		"""
@@ -83,8 +83,8 @@ class APITest(BaseTest):
 		status = {"status": "In Transit"}
 		self.client.post('/api/v1/parcels', data=json.dumps(parcel), content_type='application/json', headers={'Authorization': token})
 		response = self.client.put('/api/v1/parcels/1/status', json=status, headers={'Authorization': token})
-		self.assertEqual(response.status_code, 400)
-		#self.assertIn("parcel status updated", str(response.json))
+		self.assertEqual(response.status_code, 200)
+		self.assertIn("parcel status updated", str(response.json))
 
 	def test_change_parcel_present_location(self):
 		"""
