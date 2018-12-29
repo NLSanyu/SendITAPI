@@ -1,0 +1,25 @@
+tags:
+ - Cancel a specific parcel
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This route is used to cancel a specific parcel
+responses:
+  200:
+    description: Parcel cancelled
+    schema:
+      id: parcel
+      properties:
+        description:
+            type: string
+            default: parcel
+        pickup_location:
+          type: string
+          default: none
+        destination:
+          type: string
+          default: none
+  400:
+    description: Parcel already delivered or cancelled

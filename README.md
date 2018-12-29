@@ -2,8 +2,9 @@
 SendIT is a courier service that helps users deliver parcels to different destinations. SendITAPI is the API for this project.
 
 
-[![Build Status](https://travis-ci.org/NLSanyu/SendITAPI.svg?branch=master)](https://travis-ci.org/NLSanyu/SendITAPI)
-[![Coverage Status](https://coveralls.io/repos/github/NLSanyu/SendITAPI/badge.svg?branch=master)](https://coveralls.io/github/NLSanyu/SendITAPI?branch=master)
+[![Build Status](https://travis-ci.org/NLSanyu/SendITAPI.svg?branch=api_with_db)](https://travis-ci.org/NLSanyu/SendITAPI)
+[![Coverage Status](https://coveralls.io/repos/github/NLSanyu/SendITAPI/badge.svg?branch=api_with_db)](https://coveralls.io/github/NLSanyu/SendITAPI?branch=api_with_db)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7d6df8a6836b46adf0ee/maintainability)](https://codeclimate.com/github/NLSanyu/SendITAPI/maintainability)
 
 
 ## Getting Started
@@ -13,6 +14,10 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 ```
 Python 3.6.5
+<<<<<<< HEAD
+=======
+Postgresql database
+>>>>>>> 97abe53eda7616872d1f2a49ac37fcd9e7b8d719
 ```
 
 ### Installation
