@@ -4,8 +4,6 @@ SendIT is a courier service that helps users deliver parcels to different destin
 
 [![Build Status](https://travis-ci.org/NLSanyu/SendITAPI.svg?branch=develop)](https://travis-ci.org/NLSanyu/SendITAPI)
 [![Coverage Status](https://coveralls.io/repos/github/NLSanyu/SendITAPI/badge.svg?branch=develop)](https://coveralls.io/github/NLSanyu/SendITAPI?branch=develop)
-[![Maintainability](https://api.codeclimate.com/v1/badges/7d6df8a6836b46adf0ee/maintainability)](https://codeclimate.com/github/NLSanyu/SendITAPI/maintainability)
-
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes
