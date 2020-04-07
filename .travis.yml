@@ -1,0 +1,13 @@
+language: python
+python:
+  - "3.6.5"
+install:
+  - pip install -r requirements.txt
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database deu2c9vgu0pnkt;'
+script:
+  - pytest test --cov=app/api --cov-report term-missing
+after_success:
+  - coveralls

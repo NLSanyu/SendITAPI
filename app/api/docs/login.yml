@@ -1,0 +1,24 @@
+Authentication docs
+---
+tags:
+ - User Authentication
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This route is used to log a user in 
+responses:
+  200:
+    description: Login successful
+    schema:
+      id: user
+      properties:
+        username:
+          type: string
+          default: user
+        password:
+          type: string
+          default: password
+  400:
+    description: Login failed
